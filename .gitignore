@@ -1,0 +1,35 @@
+Debug/
+Release/
+bin/
+obj/
+
+# Исключаем конкретные файлы прошивок, если они создаются в других местах
+*.elf
+*.bin
+*.hex
+*.map
+*.o
+*.d
+*.su
+
+# --- Локальные настройки IDE (Eclipse / STM32CubeIDE) ---
+# Эти файлы содержат пути к вашей локальной истории, открытым вкладкам и индексам
+.metadata/
+.recommenders/
+RemoteSystemsTempFiles/
+*.ers
+*.suo
+*.user
+
+# Локальные настройки конкретного пользователя внутри проекта
+.settings/org.eclipse.cdt.make.core.prefs
+.settings/org.eclipse.cdt.managedbuilder.core.prefs
+.settings/org.eclipse.core.resources.prefs
+
+# --- Логи и временные файлы ---
+*.log
+*.tmp
+
+# --- Файлы операционной системы ---
+.DS_Store
+Thumbs.db

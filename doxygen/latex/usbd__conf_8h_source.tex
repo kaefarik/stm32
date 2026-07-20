@@ -1,0 +1,111 @@
+\doxysection{usbd\+\_\+conf.\+h}
+\hypertarget{usbd__conf_8h_source}{}\label{usbd__conf_8h_source}\index{C:/Users/kaefarik/Documents/stm32/USB\_DEVICE/Target/usbd\_conf.h@{C:/Users/kaefarik/Documents/stm32/USB\_DEVICE/Target/usbd\_conf.h}}
+\doxymbox{\hyperlink{usbd__conf_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*\ USER\ CODE\ BEGIN\ Header\ */}}
+\DoxyCodeLine{00019\ \textcolor{comment}{/*\ USER\ CODE\ END\ Header\ */}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{comment}{/*\ Define\ to\ prevent\ recursive\ inclusion\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*/}}
+\DoxyCodeLine{00022\ \textcolor{preprocessor}{\#ifndef\ \_\_USBD\_CONF\_\_H\_\_}}
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#define\ \_\_USBD\_CONF\_\_H\_\_}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00026\ \ \textcolor{keyword}{extern}\ \textcolor{stringliteral}{"{}C"{}}\ \{}
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{comment}{/*\ Includes\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*/}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ <stdio.h>}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#include\ <stdlib.h>}}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#include\ <string.h>}}
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{main_8h}{main.h}}"{}}}
+\DoxyCodeLine{00034\ \textcolor{preprocessor}{\#include\ "{}stm32f1xx.h"{}}}
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#include\ "{}stm32f1xx\_hal.h"{}}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \textcolor{comment}{/*\ USER\ CODE\ BEGIN\ INCLUDE\ */}}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{comment}{/*\ USER\ CODE\ END\ INCLUDE\ */}}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \textcolor{comment}{/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*/}}
+\DoxyCodeLine{00065\ \textcolor{preprocessor}{\#define\ USBD\_MAX\_NUM\_INTERFACES\ \ \ \ \ 1}}
+\DoxyCodeLine{00066\ \textcolor{comment}{/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*/}}
+\DoxyCodeLine{00067\ \textcolor{preprocessor}{\#define\ USBD\_MAX\_NUM\_CONFIGURATION\ \ \ \ \ 1}}
+\DoxyCodeLine{00068\ \textcolor{comment}{/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*/}}
+\DoxyCodeLine{00069\ \textcolor{preprocessor}{\#define\ USBD\_MAX\_STR\_DESC\_SIZ\ \ \ \ \ 512}}
+\DoxyCodeLine{00070\ \textcolor{comment}{/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*/}}
+\DoxyCodeLine{00071\ \textcolor{preprocessor}{\#define\ USBD\_DEBUG\_LEVEL\ \ \ \ \ 0}}
+\DoxyCodeLine{00072\ \textcolor{comment}{/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*/}}
+\DoxyCodeLine{00073\ \textcolor{preprocessor}{\#define\ USBD\_SELF\_POWERED\ \ \ \ \ 1}}
+\DoxyCodeLine{00074\ \textcolor{comment}{/*-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*/}}
+\DoxyCodeLine{00075\ \textcolor{preprocessor}{\#define\ MAX\_STATIC\_ALLOC\_SIZE\ \ \ \ \ 512}}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00077\ \textcolor{comment}{/****************************************/}}
+\DoxyCodeLine{00078\ \textcolor{comment}{/*\ \#define\ for\ FS\ and\ HS\ identification\ */}}
+\DoxyCodeLine{00079\ \textcolor{preprocessor}{\#define\ DEVICE\_FS\ \ \ \ \ \ \ 0}}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \textcolor{comment}{/*\ Memory\ management\ macros\ */}}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00093\ \textcolor{preprocessor}{\#define\ USBD\_malloc\ \ \ \ \ \ \ \ \ (uint32\_t\ *)USBD\_static\_malloc}}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00096\ \textcolor{preprocessor}{\#define\ USBD\_free\ \ \ \ \ \ \ \ \ \ \ USBD\_static\_free}}
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00099\ \textcolor{preprocessor}{\#define\ USBD\_memset\ \ \ \ \ \ \ \ \ }\textcolor{comment}{/*\ Not\ used\ */}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00100\ }
+\DoxyCodeLine{00102\ \textcolor{preprocessor}{\#define\ USBD\_memcpy\ \ \ \ \ \ \ \ \ }\textcolor{comment}{/*\ Not\ used\ */}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00105\ \textcolor{preprocessor}{\#define\ USBD\_Delay\ \ \ \ \ \ \ \ \ \ HAL\_Delay}}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \textcolor{comment}{/*\ For\ footprint\ reasons\ and\ since\ only\ one\ allocation\ is\ handled\ in\ the\ HID\ class}}
+\DoxyCodeLine{00108\ \textcolor{comment}{\ \ \ driver,\ the\ malloc/free\ is\ changed\ into\ a\ static\ allocation\ method\ */}}
+\DoxyCodeLine{00109\ \textcolor{keywordtype}{void}\ *\doxymbox{\hyperlink{group___u_s_b_d___c_o_n_f___exported___macros_gace052001a973567f8789fec6d6923df5}{USBD\_static\_malloc}}(uint32\_t\ size);}
+\DoxyCodeLine{00110\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{group___u_s_b_d___c_o_n_f___exported___macros_ga92ed1214efe53f54b3586a6233cfa5a6}{USBD\_static\_free}}(\textcolor{keywordtype}{void}\ *p);}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \textcolor{comment}{/*\ DEBUG\ macros\ */}}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \textcolor{preprocessor}{\#if\ (USBD\_DEBUG\_LEVEL\ >\ 0)}}
+\DoxyCodeLine{00115\ \textcolor{preprocessor}{\#define\ USBD\_UsrLog(...)\ \ \ \ printf(\_\_VA\_ARGS\_\_);\(\backslash\)}}
+\DoxyCodeLine{00116\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ printf("{}\(\backslash\)n"{});}}
+\DoxyCodeLine{00117\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00118\ \textcolor{preprocessor}{\#define\ USBD\_UsrLog(...)}}
+\DoxyCodeLine{00119\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \textcolor{preprocessor}{\#if\ (USBD\_DEBUG\_LEVEL\ >\ 1)}}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ \textcolor{preprocessor}{\#define\ USBD\_ErrLog(...)\ \ \ \ printf("{}ERROR:\ "{})\ ;\(\backslash\)}}
+\DoxyCodeLine{00124\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ printf(\_\_VA\_ARGS\_\_);\(\backslash\)}}
+\DoxyCodeLine{00125\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ printf("{}\(\backslash\)n"{});}}
+\DoxyCodeLine{00126\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00127\ \textcolor{preprocessor}{\#define\ USBD\_ErrLog(...)}}
+\DoxyCodeLine{00128\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ \textcolor{preprocessor}{\#if\ (USBD\_DEBUG\_LEVEL\ >\ 2)}}
+\DoxyCodeLine{00131\ \textcolor{preprocessor}{\#define\ USBD\_DbgLog(...)\ \ \ \ printf("{}DEBUG\ :\ "{})\ ;\(\backslash\)}}
+\DoxyCodeLine{00132\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ printf(\_\_VA\_ARGS\_\_);\(\backslash\)}}
+\DoxyCodeLine{00133\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ printf("{}\(\backslash\)n"{});}}
+\DoxyCodeLine{00134\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00135\ \textcolor{preprocessor}{\#define\ USBD\_DbgLog(...)}}
+\DoxyCodeLine{00136\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00141\ }
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \textcolor{comment}{/*\ Exported\ functions\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/*/}}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00161\ }
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00170\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{00171\ \}}
+\DoxyCodeLine{00172\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00173\ }
+\DoxyCodeLine{00174\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ \_\_USBD\_CONF\_\_H\_\_\ */}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00175\ }
+
+\end{DoxyCode}

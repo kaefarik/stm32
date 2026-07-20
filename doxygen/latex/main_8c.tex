@@ -1,0 +1,822 @@
+\doxysection{C:\+/\+\+Users/\+kaefarik/\+\+Documents/\+stm32/\+\+Core/\+\+Src/\+main.c File Reference}
+\hypertarget{main_8c}{}\label{main_8c}\index{C:/Users/kaefarik/Documents/stm32/Core/Src/main.c@{C:/Users/kaefarik/Documents/stm32/Core/Src/main.c}}
+
+
+:\+ Main program body  
+
+
+{\ttfamily \+\#include "{}main.\+h"{}}\newline
+{\ttfamily \+\#include "{}usb\+\_\+device.\+h"{}}\newline
+{\ttfamily \+\#include "{}usbd\+\_\+cdc\+\_\+if.\+h"{}}\newline
+{\ttfamily \+\#include "{}ee.\+h"{}}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \doxymbox{\hyperlink{struct_p_i_d___controller__t}{PID\+\_\+\+Controller\+\_\+t}}
+\item 
+struct \doxymbox{\hyperlink{structee_storage__t}{ee\+Storage\+\_\+t}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{main_8c_a4b7ead2fdac4c50e28b2a26a756400f5}\label{main_8c_a4b7ead2fdac4c50e28b2a26a756400f5} 
+\+\#define {\bfseries EE\+\_\+\+MAGIC\+\_\+\+VALID}~0x\+CAFEBABE
+\item 
+\Hypertarget{main_8c_ad3481336e8f2e676e47398d2b92b0f01}\label{main_8c_ad3481336e8f2e676e47398d2b92b0f01} 
+\+\#define {\bfseries VOLTAGE\+\_\+\+TOLERANCE}~0.\+01f
+\item 
+\Hypertarget{main_8c_a4deb5ee21f1744997e32171edcf037d3}\label{main_8c_a4deb5ee21f1744997e32171edcf037d3} 
+\+\#define {\bfseries CURRENT\+\_\+\+TOLERANCE}~0.\+01f
+\item 
+\Hypertarget{main_8c_a0a1e4025de72eae7b2fd33a167424f4d}\label{main_8c_a0a1e4025de72eae7b2fd33a167424f4d} 
+\+\#define {\bfseries ADJUST\+\_\+\+INTERVAL\+\_\+\+MS}~50
+\item 
+\Hypertarget{main_8c_ad0e40bab0574961a59f0233e602f834e}\label{main_8c_ad0e40bab0574961a59f0233e602f834e} 
+\+\#define {\bfseries MAX\+\_\+\+CAL\+\_\+\+POINTS}~20
+\item 
+\Hypertarget{main_8c_a2ad5486e91a2527f3721d90aa83ef35d}\label{main_8c_a2ad5486e91a2527f3721d90aa83ef35d} 
+\+\#define {\bfseries DIGIT\+\_\+\+AFTER\+\_\+\+FLOAT}~3
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{main_8c_ae34edb3517a5a4ca11c930647ef644ac}\label{main_8c_ae34edb3517a5a4ca11c930647ef644ac} 
+enum {\bfseries Set\+Result\+\_\+t} \{ \newline
+{\bfseries SET\+\_\+\+OK} = 0
+, {\bfseries SET\+\_\+\+ERR\+\_\+\+TOO\+\_\+\+LOW}
+, {\bfseries SET\+\_\+\+ERR\+\_\+\+TOO\+\_\+\+HIGH}
+, {\bfseries SET\+\_\+\+ERR\+\_\+\+NO\+\_\+\+VOLTAGE}
+, \newline
+{\bfseries SET\+\_\+\+ERR\+\_\+\+NO\+\_\+\+LOAD}
+ \}
+\item 
+\Hypertarget{main_8c_a22455d1f37ad62a065b730cf519fde61}\label{main_8c_a22455d1f37ad62a065b730cf519fde61} 
+enum {\bfseries Reg\+Mode\+\_\+t} \{ {\bfseries REG\+\_\+\+NONE} = 0
+, {\bfseries REG\+\_\+\+VOLTAGE}
+, {\bfseries REG\+\_\+\+CURRENT}
+ \}
+\item 
+\Hypertarget{main_8c_aa267c5763d0b58214b9314747b4fdc22}\label{main_8c_aa267c5763d0b58214b9314747b4fdc22} 
+enum {\bfseries Cal\+Mode\+\_\+t} \{ {\bfseries CAL\+\_\+\+MODE\+\_\+\+NONE} = 0
+, {\bfseries CAL\+\_\+\+MODE\+\_\+\+VOLTAGE}
+, {\bfseries CAL\+\_\+\+MODE\+\_\+\+CURRENT}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \doxymbox{\hyperlink{main_8c_a70af21c671abfcc773614a9a4f63d920}{System\+Clock\+\_\+\+Config}} (void)
+\begin{DoxyCompactList}\small\item\em System Clock Configuration. \end{DoxyCompactList}\item 
+float \doxymbox{\hyperlink{main_8c_a655a5c991bf885669f4afd52424d33ed}{Read\+VSW\+\_\+\+Voltage\+\_\+\+Avg}} (uint8\+\_\+t samples)
+\begin{DoxyCompactList}\small\item\em Измеряет выходное напряжение VSW усреднением нескольких отсчётов АЦП1 (PA4). \end{DoxyCompactList}\item 
+float \doxymbox{\hyperlink{main_8c_a98e61730a1acbca5faa83d8f723ed1bc}{Read\+VSW\+\_\+\+Current\+\_\+\+Avg}} (uint8\+\_\+t samples)
+\begin{DoxyCompactList}\small\item\em Измеряет выходной ток нагрузки усреднением нескольких отсчётов АЦП2 (PA3). \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{main_8c_a2f0ff303e1752c87395dd00697021c5c}{Soft\+SPI\+\_\+\+Write\+Byte}} (uint8\+\_\+t data)
+\begin{DoxyCompactList}\small\item\em Передаёт один байт по программному SPI (bit-\/bang), режим Mode 0 (CPOL=0, CPHA=0). \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{main_8c_a787f10bc3e825ca26d9a0bc6d4af034f}{MCP41010\+\_\+\+Set\+Wiper}} (uint8\+\_\+t value)
+\begin{DoxyCompactList}\small\item\em Устанавливает положение (код 0..255) цифрового потенциометра MCP41010. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{main_8c_a8c3d7b641ce987818f84adafbdc3bd3c}{Float\+To\+Str}} (float value, char \texorpdfstring{$\ast$}{*}buf, uint8\+\_\+t decimals)
+\begin{DoxyCompactList}\small\item\em Форматирует число с плавающей точкой в строку с фиксированным числом знаков после запятой, без использования printf/\+sprintf из stdio.\+h. \end{DoxyCompactList}\item 
+uint8\+\_\+t \doxymbox{\hyperlink{main_8c_a88bbd6049eda9380b6373ed0fb5cb428}{UInt\+To\+Str}} (uint32\+\_\+t value, char \texorpdfstring{$\ast$}{*}buf)
+\begin{DoxyCompactList}\small\item\em Преобразует беззнаковое целое число в десятичную строку без использования stdio.\+h. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{main_8c_a81a7273c6daf529e0caea13b2ac6ae30}{Regulation\+\_\+\+Step}} (void)
+\begin{DoxyCompactList}\small\item\em Исполнительный шаг алгоритма стабилизации (вызывается циклически). \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{main_8c_a5329716fb431ddd2100cc4f420968d7b}{Startup\+\_\+\+Reference\+Calibration}} (void)
+\begin{DoxyCompactList}\small\item\em Установка потенциометра в код 255 при старте МК. \end{DoxyCompactList}\item 
+Set\+Result\+\_\+t \doxymbox{\hyperlink{main_8c_aeafd763643057bba5d9de9ddd19b2513}{Compute\+Code\+For\+Voltage}} (float target\+\_\+voltage, uint8\+\_\+t \texorpdfstring{$\ast$}{*}out\+\_\+code)
+\begin{DoxyCompactList}\small\item\em Рассчитывает код потенциометра, необходимый для получения целевого VSW. \end{DoxyCompactList}\item 
+Set\+Result\+\_\+t \doxymbox{\hyperlink{main_8c_af22b01d408f17771b12b6ba35aa88b5f}{Set\+Target\+Voltage}} (float target\+\_\+voltage)
+\begin{DoxyCompactList}\small\item\em Устанавливает целевое выходное напряжение и включает автоматическое регулирование. \end{DoxyCompactList}\item 
+Set\+Result\+\_\+t \doxymbox{\hyperlink{main_8c_a797ac38dc480cb084413f1283e95b6a1}{Set\+Target\+Current}} (float target\+\_\+current)
+\begin{DoxyCompactList}\small\item\em Устанавливает целевой выходной ток через пересчёт в эквивалентное напряжение. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{main_8c_a55f7cc12278e94e3e88f6d7202c769f0}{Send\+Voltage\+Now}} (void)
+\begin{DoxyCompactList}\small\item\em Немедленно формирует и отправляет по USB CDC строку с текущим напряжением. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{main_8c_a1a78b3a0b1a6776ba40419ffb3703631}{Send\+Current\+Now}} (void)
+\begin{DoxyCompactList}\small\item\em Немедленно формирует и отправляет по USB CDC строку с текущим током. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{main_8c_a390a36de7cbdfc21712ba002df862860}{Send\+Report\+Now}} (void)
+\begin{DoxyCompactList}\small\item\em Формирует и отправляет по USB CDC общий отчёт по напряжению и току. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{main_8c_a6a537f504d2da07b4903f68d30b60bb0}{Cal\+Start\+\_\+\+Voltage}} (void)
+\begin{DoxyCompactList}\small\item\em Переводит канал измерения напряжения в режим сбора калибровочных точек. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{main_8c_abd51c7a5b731db1243c3bd2bd3193300}{Cal\+Start\+\_\+\+Current}} (void)
+\begin{DoxyCompactList}\small\item\em Переводит канал измерения тока в режим сбора калибровочных точек. \end{DoxyCompactList}\item 
+uint8\+\_\+t \doxymbox{\hyperlink{main_8c_a4a1a3368eb91902e86f2c41d7dab06b6}{Cal\+Add\+Point\+\_\+\+Voltage}} (float real\+\_\+value)
+\begin{DoxyCompactList}\small\item\em Добавляет одну калибровочную точку для канала напряжения. \end{DoxyCompactList}\item 
+uint8\+\_\+t \doxymbox{\hyperlink{main_8c_af02fa7c56443614b79fb19d79741bac0}{Cal\+Add\+Point\+\_\+\+Current}} (float real\+\_\+value)
+\begin{DoxyCompactList}\small\item\em Добавляет одну калибровочную точку для канала тока. \end{DoxyCompactList}\item 
+uint8\+\_\+t \doxymbox{\hyperlink{main_8c_ae2cec09201cdf2b749ca313df76ccfb5}{Cal\+Stop\+\_\+\+And\+Compute}} (char \texorpdfstring{$\ast$}{*}resp, uint8\+\_\+t \texorpdfstring{$\ast$}{*}resp\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Завершает текущий режим калибровки:\+ рассчитывает и применяет новые коэффициенты, сохраняет их во Flash-\/память и формирует текстовый ответ. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{main_8c_a4529cf5cd93ec988a6ffd338a7f3e203}{Save\+Coefficients\+To\+Flash}} (void)
+\begin{DoxyCompactList}\small\item\em Сохраняет текущие калибровочные коэффициенты во Flash-\/память (EEPROM emulation). \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{main_8c_ae60b53dc6f1a98053a60e6ce2b97910a}{Load\+Coefficients\+From\+Flash}} (void)
+\begin{DoxyCompactList}\small\item\em Загружает ранее сохранённые калибровочные коэффициенты из Flash-\/памяти. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{main_8c_ab688837be71fcac7f55eec95235175a8}{Print\+Saved\+Voltage\+Coefficients}} (void)
+\begin{DoxyCompactList}\small\item\em Считывает и отправляет по USB CDC содержимое сохранённых во Flash коэффициентов. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{main_8c_a18be6cf33846b540d888fafbade07939}{Print\+Saved\+Current\+Coefficients}} (void)
+\begin{DoxyCompactList}\small\item\em Считывает и отправляет по USB CDC содержимое сохранённых во Flash коэффициентов. \end{DoxyCompactList}\item 
+float \doxymbox{\hyperlink{main_8c_a976f558d5dbf151335b9989b2f2c8d8e}{PID\+\_\+\+Compute}} (\doxymbox{\hyperlink{struct_p_i_d___controller__t}{PID\+\_\+\+Controller\+\_\+t}} \texorpdfstring{$\ast$}{*}pid, float error, float current\+\_\+output)
+\begin{DoxyCompactList}\small\item\em Вычисляет управляющее воздействие по алгоритму ПИД-\/регулирования. \end{DoxyCompactList}\item 
+int \doxymbox{\hyperlink{main_8c_a840291bc02cba5474a4cb46a9b9566fe}{main}} (void)
+\begin{DoxyCompactList}\small\item\em The application entry point. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{main_8c_a8a3b0ad512a6e6c6157440b68d395eac}{HAL\+\_\+\+TIM\+\_\+\+Period\+Elapsed\+Callback}} (TIM\+\_\+\+Handle\+Type\+Def \texorpdfstring{$\ast$}{*}htim)
+\begin{DoxyCompactList}\small\item\em Callback переполнения таймера, вызывается HAL из прерывания TIM3 каждую 1 мс. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{main_8c_a1730ffe1e560465665eb47d9264826f9}{Error\+\_\+\+Handler}} (void)
+\begin{DoxyCompactList}\small\item\em This function is executed in case of error occurrence. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{main_8c_a22b804736f5648d52f639b2647d4ed13}\label{main_8c_a22b804736f5648d52f639b2647d4ed13} 
+ADC\+\_\+\+Handle\+Type\+Def {\bfseries hadc1}
+\item 
+\Hypertarget{main_8c_acd9221f1aa19aebfe0b744947f2daf49}\label{main_8c_acd9221f1aa19aebfe0b744947f2daf49} 
+ADC\+\_\+\+Handle\+Type\+Def {\bfseries hadc2}
+\item 
+\Hypertarget{main_8c_aac3d2c59ee0e3bbae1b99529a154eb62}\label{main_8c_aac3d2c59ee0e3bbae1b99529a154eb62} 
+TIM\+\_\+\+Handle\+Type\+Def {\bfseries htim3}
+\item 
+\Hypertarget{main_8c_ac22868fbf94bee33df04c14a05eca665}\label{main_8c_ac22868fbf94bee33df04c14a05eca665} 
+volatile float {\bfseries target\+\_\+voltage\+\_\+g} = 0.\+0f
+\item 
+\Hypertarget{main_8c_abd58f4e12cf2f5e61251df70ba41155b}\label{main_8c_abd58f4e12cf2f5e61251df70ba41155b} 
+volatile float {\bfseries target\+\_\+current\+\_\+g} = 0.\+0f
+\item 
+\Hypertarget{main_8c_a16f1828ae7cfbc96d1bbdf3c020e2abc}\label{main_8c_a16f1828ae7cfbc96d1bbdf3c020e2abc} 
+uint8\+\_\+t {\bfseries current\+\_\+pot\+\_\+code} = 255
+\item 
+\Hypertarget{main_8c_a2d45137ab815bb8bde0e45b5de45bf7d}\label{main_8c_a2d45137ab815bb8bde0e45b5de45bf7d} 
+volatile Reg\+Mode\+\_\+t {\bfseries reg\+\_\+mode} = REG\+\_\+\+NONE
+\item 
+\Hypertarget{main_8c_a93a2af62618df54c7a51e29959b5dde4}\label{main_8c_a93a2af62618df54c7a51e29959b5dde4} 
+volatile float {\bfseries base\+\_\+voltage\+\_\+feedforward} = 0.\+0f
+\item 
+\Hypertarget{main_8c_a84e5f212f1471ac3d241a3e09a1c21b5}\label{main_8c_a84e5f212f1471ac3d241a3e09a1c21b5} 
+volatile uint32\+\_\+t {\bfseries system\+\_\+ms\+\_\+ticks} = 0
+\item 
+\Hypertarget{main_8c_aec2ea14b30d757cd452e9f4ee24e49ab}\label{main_8c_aec2ea14b30d757cd452e9f4ee24e49ab} 
+volatile uint8\+\_\+t {\bfseries flag\+\_\+measure} = 0
+\item 
+\Hypertarget{main_8c_ad736a497ece408e4e7dbf382af081842}\label{main_8c_ad736a497ece408e4e7dbf382af081842} 
+volatile uint8\+\_\+t {\bfseries flag\+\_\+report} = 0
+\item 
+\Hypertarget{main_8c_a4acb7c25cf74c5cb101d110f88594a1c}\label{main_8c_a4acb7c25cf74c5cb101d110f88594a1c} 
+volatile float {\bfseries last\+\_\+vsw} = 0.\+0f
+\item 
+\Hypertarget{main_8c_a2cb5a8342ecd66245b902e973b05a2f5}\label{main_8c_a2cb5a8342ecd66245b902e973b05a2f5} 
+volatile float {\bfseries last\+\_\+vcu} = 0.\+0f
+\item 
+\Hypertarget{main_8c_ac582b69742756005ee82a1e8f0744b59}\label{main_8c_ac582b69742756005ee82a1e8f0744b59} 
+float {\bfseries g\+\_\+voltage\+\_\+k} = 0.\+9943f
+\item 
+\Hypertarget{main_8c_a0e50585b74be9067ba3a93b37ba61c7d}\label{main_8c_a0e50585b74be9067ba3a93b37ba61c7d} 
+float {\bfseries g\+\_\+voltage\+\_\+b} = -\/0.\+1782f
+\item 
+\Hypertarget{main_8c_ab9177c29872fbf66f31e873d431b319e}\label{main_8c_ab9177c29872fbf66f31e873d431b319e} 
+float {\bfseries g\+\_\+current\+\_\+k} = 0.\+882f
+\item 
+\Hypertarget{main_8c_aeb0d8374b8ba98f06da14f5b521f6122}\label{main_8c_aeb0d8374b8ba98f06da14f5b521f6122} 
+float {\bfseries g\+\_\+current\+\_\+b} = 0.\+0116f
+\item 
+\Hypertarget{main_8c_ac8fc8a345be0d01ba0dc68ef0ce3660b}\label{main_8c_ac8fc8a345be0d01ba0dc68ef0ce3660b} 
+\doxymbox{\hyperlink{structee_storage__t}{ee\+Storage\+\_\+t}} {\bfseries ee\+\_\+storage}
+\item 
+\Hypertarget{main_8c_afee8bbf694b3e4caa8d2f6d9f1f1e573}\label{main_8c_afee8bbf694b3e4caa8d2f6d9f1f1e573} 
+volatile Cal\+Mode\+\_\+t {\bfseries cal\+\_\+mode} = CAL\+\_\+\+MODE\+\_\+\+NONE
+\item 
+\Hypertarget{main_8c_a5a7e1b6febd0ad0a887db31a865b549d}\label{main_8c_a5a7e1b6febd0ad0a887db31a865b549d} 
+float {\bfseries cal\+\_\+prog\+\_\+points} \+[MAX\+\_\+\+CAL\+\_\+\+POINTS]\+
+\item 
+\Hypertarget{main_8c_a26eeacf2e3095ffed6bd68a51ebb49a1}\label{main_8c_a26eeacf2e3095ffed6bd68a51ebb49a1} 
+float {\bfseries cal\+\_\+real\+\_\+points} \+[MAX\+\_\+\+CAL\+\_\+\+POINTS]\+
+\item 
+\Hypertarget{main_8c_ab8384a091dbfd4e35294aafade806a70}\label{main_8c_ab8384a091dbfd4e35294aafade806a70} 
+uint8\+\_\+t {\bfseries cal\+\_\+point\+\_\+count} = 0
+\item 
+\Hypertarget{main_8c_a21a67ae6e053a2472c3aa06660ede4a8}\label{main_8c_a21a67ae6e053a2472c3aa06660ede4a8} 
+uint8\+\_\+t {\bfseries g\+\_\+calibrated} = 0
+\item 
+\Hypertarget{main_8c_ab7cc76f4ac15e0f454328ea46ff1032d}\label{main_8c_ab7cc76f4ac15e0f454328ea46ff1032d} 
+volatile uint8\+\_\+t {\bfseries debug\+\_\+output\+\_\+enabled} = 0
+\item 
+\Hypertarget{main_8c_a867dd4d048403155c5308085fbd5421f}\label{main_8c_a867dd4d048403155c5308085fbd5421f} 
+volatile uint32\+\_\+t {\bfseries debug\+\_\+report\+\_\+interval\+\_\+ms} = 1000
+\item 
+\Hypertarget{main_8c_a903264133a1ece565e19c58f15d78627}\label{main_8c_a903264133a1ece565e19c58f15d78627} 
+\doxymbox{\hyperlink{struct_p_i_d___controller__t}{PID\+\_\+\+Controller\+\_\+t}} {\bfseries pid\+\_\+v}
+\item 
+\Hypertarget{main_8c_aa9dbf7817160bc09189b0fe9cb6d5d57}\label{main_8c_aa9dbf7817160bc09189b0fe9cb6d5d57} 
+float {\bfseries pid\+\_\+\+Kp} = 8.\+0f
+\item 
+\Hypertarget{main_8c_a2b03a8b222f2546ff5b3c53d2afa3e36}\label{main_8c_a2b03a8b222f2546ff5b3c53d2afa3e36} 
+float {\bfseries pid\+\_\+\+Ki} = 5.\+0f
+\item 
+\Hypertarget{main_8c_aa3f60f0f33b231fb2406ecd98d4838f9}\label{main_8c_aa3f60f0f33b231fb2406ecd98d4838f9} 
+float {\bfseries pid\+\_\+\+Kd} = 0.\+05f
+\item 
+\Hypertarget{main_8c_abbbea09ed5574ee1975f2af8e47445d0}\label{main_8c_abbbea09ed5574ee1975f2af8e47445d0} 
+\doxymbox{\hyperlink{struct_p_i_d___controller__t}{PID\+\_\+\+Controller\+\_\+t}} {\bfseries pid\+\_\+i}
+\item 
+\Hypertarget{main_8c_aaf44d18a2c1ca242e315be53b12e08e6}\label{main_8c_aaf44d18a2c1ca242e315be53b12e08e6} 
+float {\bfseries pid\+\_\+i\+\_\+\+Kp} = 4.\+5f
+\item 
+\Hypertarget{main_8c_a432dbf6097425bc36ac78b9f33f201a3}\label{main_8c_a432dbf6097425bc36ac78b9f33f201a3} 
+float {\bfseries pid\+\_\+i\+\_\+\+Ki} = 6.\+0f
+\item 
+\Hypertarget{main_8c_a6d9d56820ff6165fa9ef9198156aeb6b}\label{main_8c_a6d9d56820ff6165fa9ef9198156aeb6b} 
+float {\bfseries pid\+\_\+i\+\_\+\+Kd} = 0.\+0f
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+:\+ Main program body 
+
+\begin{DoxyAttention}{Attention}
+
+\end{DoxyAttention}
+Copyright (c) 2026 STMicroelectronics. All rights reserved.
+
+This software is licensed under terms that can be found in the LICENSE file in the root directory of this software component. If no LICENSE file comes with this software, it is provided AS-\/\+IS. 
+
+\label{main_8c_doc-func-members}
+\Hypertarget{main_8c_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{main_8c_af02fa7c56443614b79fb19d79741bac0}\index{main.c@{main.c}!CalAddPoint\_Current@{CalAddPoint\_Current}}
+\index{CalAddPoint\_Current@{CalAddPoint\_Current}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{CalAddPoint\_Current()}{CalAddPoint\_Current()}}
+{\footnotesize\ttfamily \label{main_8c_af02fa7c56443614b79fb19d79741bac0} 
+uint8\+\_\+t Cal\+Add\+Point\+\_\+\+Current (\begin{DoxyParamCaption}\item[{float}]{real\+\_\+value}{}\end{DoxyParamCaption})}
+
+
+
+Добавляет одну калибровочную точку для канала тока. 
+
+\begin{DoxyNote}{Note}
+В качестве "{}программного"{} значения используется текущий кэш last\+\_\+vcu, снятый при коэффициентах k=1, b=0, установленных в Cal\+Start\+\_\+\+Current. 
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em real\+\_\+value} & Эталонное значение тока (например, от внешнего мультиметра), А. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyRetVals}{Return values}
+{\em 1,если} & точка успешно добавлена; 0, если режим калибровки тока не активен либо буфер точек уже заполнен \texorpdfstring{$>$}{>}= MAX\+\_\+\+CAL\+\_\+\+POINTS \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a4a1a3368eb91902e86f2c41d7dab06b6}\index{main.c@{main.c}!CalAddPoint\_Voltage@{CalAddPoint\_Voltage}}
+\index{CalAddPoint\_Voltage@{CalAddPoint\_Voltage}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{CalAddPoint\_Voltage()}{CalAddPoint\_Voltage()}}
+{\footnotesize\ttfamily \label{main_8c_a4a1a3368eb91902e86f2c41d7dab06b6} 
+uint8\+\_\+t Cal\+Add\+Point\+\_\+\+Voltage (\begin{DoxyParamCaption}\item[{float}]{real\+\_\+value}{}\end{DoxyParamCaption})}
+
+
+
+Добавляет одну калибровочную точку для канала напряжения. 
+
+\begin{DoxyNote}{Note}
+В качестве "{}программного"{} значения используется текущий кэш last\+\_\+vsw, снятый при коэффициентах k=1, b=0, установленных в Cal\+Start\+\_\+\+Voltage. 
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em real\+\_\+value} & Эталонное значение напряжения (например, от внешнего мультиметра), В. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyRetVals}{Return values}
+{\em 1,если} & точка успешно добавлена; 0, если режим калибровки напряжения не активен либо буфер точек уже заполнен \texorpdfstring{$>$}{>}= MAX\+\_\+\+CAL\+\_\+\+POINTS \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_abd51c7a5b731db1243c3bd2bd3193300}\index{main.c@{main.c}!CalStart\_Current@{CalStart\_Current}}
+\index{CalStart\_Current@{CalStart\_Current}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{CalStart\_Current()}{CalStart\_Current()}}
+{\footnotesize\ttfamily \label{main_8c_abd51c7a5b731db1243c3bd2bd3193300} 
+void Cal\+Start\+\_\+\+Current (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Переводит канал измерения тока в режим сбора калибровочных точек. 
+
+\begin{DoxyNote}{Note}
+Временно обнуляет g\+\_\+current\+\_\+k/\+g\+\_\+current\+\_\+b (k=1, b=0) для получения "{}сырых"{} показаний на время калибровки и очищает буфер точек cal\+\_\+point\+\_\+count. 
+\end{DoxyNote}
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a6a537f504d2da07b4903f68d30b60bb0}\index{main.c@{main.c}!CalStart\_Voltage@{CalStart\_Voltage}}
+\index{CalStart\_Voltage@{CalStart\_Voltage}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{CalStart\_Voltage()}{CalStart\_Voltage()}}
+{\footnotesize\ttfamily \label{main_8c_a6a537f504d2da07b4903f68d30b60bb0} 
+void Cal\+Start\+\_\+\+Voltage (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Переводит канал измерения напряжения в режим сбора калибровочных точек. 
+
+\begin{DoxyNote}{Note}
+Временно обнуляет g\+\_\+voltage\+\_\+k/\+g\+\_\+voltage\+\_\+b (k=1, b=0) для получения "{}сырых"{} показаний на время калибровки и очищает буфер точек cal\+\_\+point\+\_\+count. 
+\end{DoxyNote}
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_ae2cec09201cdf2b749ca313df76ccfb5}\index{main.c@{main.c}!CalStop\_AndCompute@{CalStop\_AndCompute}}
+\index{CalStop\_AndCompute@{CalStop\_AndCompute}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{CalStop\_AndCompute()}{CalStop\_AndCompute()}}
+{\footnotesize\ttfamily \label{main_8c_ae2cec09201cdf2b749ca313df76ccfb5} 
+uint8\+\_\+t Cal\+Stop\+\_\+\+And\+Compute (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}}]{resp}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{resp\+\_\+len}{}\end{DoxyParamCaption})}
+
+
+
+Завершает текущий режим калибровки:\+ рассчитывает и применяет новые коэффициенты, сохраняет их во Flash-\/память и формирует текстовый ответ. 
+
+\begin{DoxyNote}{Note}
+Расчёт выполняется функцией Solve\+Linear\+Fit по накопленным точкам. При успехе автоматически вызывает \doxylink{main_8c_a4529cf5cd93ec988a6ffd338a7f3e203}{Save\+Coefficients\+To\+Flash()}. 
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em resp} & Буфер для строки ответа (минимум 96 байт). \\
+\hline
+{\em resp\+\_\+len} & Указатель, куда записывается фактическая длина сформированного ответа. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyRetVals}{Return values}
+{\em 1} & при успешном расчёте; 0, если данных недостаточно (см. Solve\+Linear\+Fit). \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_aeafd763643057bba5d9de9ddd19b2513}\index{main.c@{main.c}!ComputeCodeForVoltage@{ComputeCodeForVoltage}}
+\index{ComputeCodeForVoltage@{ComputeCodeForVoltage}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{ComputeCodeForVoltage()}{ComputeCodeForVoltage()}}
+{\footnotesize\ttfamily \label{main_8c_aeafd763643057bba5d9de9ddd19b2513} 
+Set\+Result\+\_\+t Compute\+Code\+For\+Voltage (\begin{DoxyParamCaption}\item[{float}]{target\+\_\+voltage}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{out\+\_\+code}{}\end{DoxyParamCaption})}
+
+
+
+Рассчитывает код потенциометра, необходимый для получения целевого VSW. 
+
+\begin{DoxyNote}{Note}
+Расчёт ведётся аналитически 
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em target\+\_\+voltage} & Целевое выходное напряжение, В. \\
+\hline
+{\em out\+\_\+code} & Указатель, куда записывается рассчитанный код (0..255). \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyRetVals}{Return values}
+{\em SET\+\_\+\+OK} & при успешном расчёте; SET\+\_\+\+ERR\+\_\+\+TOO\+\_\+\+LOW/\+\+SET\+\_\+\+ERR\+\_\+\+TOO\+\_\+\+HIGH, если целевое напряжение вне физически достижимого диапазона. \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a1730ffe1e560465665eb47d9264826f9}\index{main.c@{main.c}!Error\_Handler@{Error\_Handler}}
+\index{Error\_Handler@{Error\_Handler}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{Error\_Handler()}{Error\_Handler()}}
+{\footnotesize\ttfamily \label{main_8c_a1730ffe1e560465665eb47d9264826f9} 
+void Error\+\_\+\+Handler (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+This function is executed in case of error occurrence. 
+
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a8c3d7b641ce987818f84adafbdc3bd3c}\index{main.c@{main.c}!FloatToStr@{FloatToStr}}
+\index{FloatToStr@{FloatToStr}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{FloatToStr()}{FloatToStr()}}
+{\footnotesize\ttfamily \label{main_8c_a8c3d7b641ce987818f84adafbdc3bd3c} 
+void Float\+To\+Str (\begin{DoxyParamCaption}\item[{float}]{value}{, }\item[{char \texorpdfstring{$\ast$}{*}}]{buf}{, }\item[{uint8\+\_\+t}]{decimals}{}\end{DoxyParamCaption})}
+
+
+
+Форматирует число с плавающей точкой в строку с фиксированным числом знаков после запятой, без использования printf/\+sprintf из stdio.\+h. 
+
+\begin{DoxyNote}{Note}
+Поддерживает отрицательные значения и корректно обрабатывает перенос при округлении дробной части (например, 0.\+9999 при decimals=3 даёт "{}1.\+000"{}). 
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em value} & Значение для форматирования. \\
+\hline
+{\em buf} & Буфер для результирующей, завершённой нулём строки. \\
+\hline
+{\em decimals} & Количество знаков после запятой. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a8a3b0ad512a6e6c6157440b68d395eac}\index{main.c@{main.c}!HAL\_TIM\_PeriodElapsedCallback@{HAL\_TIM\_PeriodElapsedCallback}}
+\index{HAL\_TIM\_PeriodElapsedCallback@{HAL\_TIM\_PeriodElapsedCallback}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{HAL\_TIM\_PeriodElapsedCallback()}{HAL\_TIM\_PeriodElapsedCallback()}}
+{\footnotesize\ttfamily \label{main_8c_a8a3b0ad512a6e6c6157440b68d395eac} 
+void HAL\+\_\+\+TIM\+\_\+\+Period\+Elapsed\+Callback (\begin{DoxyParamCaption}\item[{TIM\+\_\+\+Handle\+Type\+Def \texorpdfstring{$\ast$}{*}}]{htim}{}\end{DoxyParamCaption})}
+
+
+
+Callback переполнения таймера, вызывается HAL из прерывания TIM3 каждую 1 мс. 
+
+\begin{DoxyNote}{Note}
+увеличивает системный счётчик миллисекунд system\+\_\+ms\+\_\+ticks на 1 и выставляет флаги flag\+\_\+measure (каждые ADJUST\+\_\+\+INTERVAL\+\_\+\+MS) и flag\+\_\+report (при включённом debug\+\_\+output\+\_\+enabled, с периодом debug\+\_\+report\+\_\+interval\+\_\+ms). 
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em htim} & Указатель на структуру-\/хендл таймера, вызвавшего прерывание. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_ae60b53dc6f1a98053a60e6ce2b97910a}\index{main.c@{main.c}!LoadCoefficientsFromFlash@{LoadCoefficientsFromFlash}}
+\index{LoadCoefficientsFromFlash@{LoadCoefficientsFromFlash}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{LoadCoefficientsFromFlash()}{LoadCoefficientsFromFlash()}}
+{\footnotesize\ttfamily \label{main_8c_ae60b53dc6f1a98053a60e6ce2b97910a} 
+void Load\+Coefficients\+From\+Flash (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Загружает ранее сохранённые калибровочные коэффициенты из Flash-\/памяти. 
+
+\begin{DoxyNote}{Note}
+None 
+\end{DoxyNote}
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a840291bc02cba5474a4cb46a9b9566fe}\index{main.c@{main.c}!main@{main}}
+\index{main@{main}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily \label{main_8c_a840291bc02cba5474a4cb46a9b9566fe} 
+int main (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+The application entry point. 
+
+
+\begin{DoxyRetVals}{Return values}
+{\em int} & \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a787f10bc3e825ca26d9a0bc6d4af034f}\index{main.c@{main.c}!MCP41010\_SetWiper@{MCP41010\_SetWiper}}
+\index{MCP41010\_SetWiper@{MCP41010\_SetWiper}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{MCP41010\_SetWiper()}{MCP41010\_SetWiper()}}
+{\footnotesize\ttfamily \label{main_8c_a787f10bc3e825ca26d9a0bc6d4af034f} 
+void MCP41010\+\_\+\+Set\+Wiper (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{value}{}\end{DoxyParamCaption})}
+
+
+
+Устанавливает положение (код 0..255) цифрового потенциометра MCP41010. 
+
+\begin{DoxyNote}{Note}
+Формирует SPI-\/транзакцию из командного байта записи в Pot0 (0x11) и байта данных, обрамлённую низким уровнем сигнала POT\+\_\+\+CS на время передачи. 
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em value} & Код положения потенциометра, 0..255. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a976f558d5dbf151335b9989b2f2c8d8e}\index{main.c@{main.c}!PID\_Compute@{PID\_Compute}}
+\index{PID\_Compute@{PID\_Compute}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{PID\_Compute()}{PID\_Compute()}}
+{\footnotesize\ttfamily \label{main_8c_a976f558d5dbf151335b9989b2f2c8d8e} 
+float PID\+\_\+\+Compute (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{struct_p_i_d___controller__t}{PID\+\_\+\+Controller\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{pid}{, }\item[{float}]{error}{, }\item[{float}]{current\+\_\+output}{}\end{DoxyParamCaption})}
+
+
+
+Вычисляет управляющее воздействие по алгоритму ПИД-\/регулирования. 
+
+\begin{DoxyNote}{Note}
+Реализует расчет пропорциональной, интегральной и дифференциальной составляющих. Включает в себя двухступенчатую защиту от интегрального насыщения (Anti-\/windup):\+
+\begin{DoxyEnumerate}
+\item Условное прекращение интегрирования (Clamping), если исполнительный орган ({\ttfamily current\+\_\+output}) уже достиг своих физических технологических границ ({\ttfamily out\+\_\+max}/\+{\ttfamily out\+\_\+min}).
+\item Жесткое ограничение (насыщение) самого накопителя интегратора диапазоном \+[-\/50.\+0, 50.\+0]\+. 
+\end{DoxyEnumerate}
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em pid} & Указатель на структуру с коэффициентами и внутренним состоянием ПИД-\/регулятора. \\
+\hline
+{\em error} & Текущая ошибка регулирования (рассогласование между целью и фактом). \\
+\hline
+{\em current\+\_\+output} & Текущий установленный код/\+значение на исполнительном органе (например, код потенциометра). \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyRetVals}{Return values}
+{\em float} & Рассчитанная величина коррекции (управляющее воздействие). \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a18be6cf33846b540d888fafbade07939}\index{main.c@{main.c}!PrintSavedCurrentCoefficients@{PrintSavedCurrentCoefficients}}
+\index{PrintSavedCurrentCoefficients@{PrintSavedCurrentCoefficients}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{PrintSavedCurrentCoefficients()}{PrintSavedCurrentCoefficients()}}
+{\footnotesize\ttfamily \label{main_8c_a18be6cf33846b540d888fafbade07939} 
+void Print\+Saved\+Current\+Coefficients (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Считывает и отправляет по USB CDC содержимое сохранённых во Flash коэффициентов. 
+
+\begin{DoxyNote}{Note}
+Используется командой get\+\_\+ci. 
+\end{DoxyNote}
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_ab688837be71fcac7f55eec95235175a8}\index{main.c@{main.c}!PrintSavedVoltageCoefficients@{PrintSavedVoltageCoefficients}}
+\index{PrintSavedVoltageCoefficients@{PrintSavedVoltageCoefficients}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{PrintSavedVoltageCoefficients()}{PrintSavedVoltageCoefficients()}}
+{\footnotesize\ttfamily \label{main_8c_ab688837be71fcac7f55eec95235175a8} 
+void Print\+Saved\+Voltage\+Coefficients (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Считывает и отправляет по USB CDC содержимое сохранённых во Flash коэффициентов. 
+
+\begin{DoxyNote}{Note}
+Используется командой get\+\_\+cv. 
+\end{DoxyNote}
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a98e61730a1acbca5faa83d8f723ed1bc}\index{main.c@{main.c}!ReadVSW\_Current\_Avg@{ReadVSW\_Current\_Avg}}
+\index{ReadVSW\_Current\_Avg@{ReadVSW\_Current\_Avg}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{ReadVSW\_Current\_Avg()}{ReadVSW\_Current\_Avg()}}
+{\footnotesize\ttfamily \label{main_8c_a98e61730a1acbca5faa83d8f723ed1bc} 
+float Read\+VSW\+\_\+\+Current\+\_\+\+Avg (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{samples}{}\end{DoxyParamCaption})}
+
+
+
+Измеряет выходной ток нагрузки усреднением нескольких отсчётов АЦП2 (PA3). 
+
+\begin{DoxyNote}{Note}
+Код АЦП пересчитывается в ток через усилитель тока INA180\+A4 и токовый шунт, затем корректируется калибровочными коэффициентами g\+\_\+current\+\_\+k/\+g\+\_\+current\+\_\+b. 
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em samples} & Количество отсчётов АЦП для усреднения. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyRetVals}{Return values}
+{\em Измеренный} & и откалиброванный ток, А. \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a655a5c991bf885669f4afd52424d33ed}\index{main.c@{main.c}!ReadVSW\_Voltage\_Avg@{ReadVSW\_Voltage\_Avg}}
+\index{ReadVSW\_Voltage\_Avg@{ReadVSW\_Voltage\_Avg}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{ReadVSW\_Voltage\_Avg()}{ReadVSW\_Voltage\_Avg()}}
+{\footnotesize\ttfamily \label{main_8c_a655a5c991bf885669f4afd52424d33ed} 
+float Read\+VSW\+\_\+\+Voltage\+\_\+\+Avg (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{samples}{}\end{DoxyParamCaption})}
+
+
+
+Измеряет выходное напряжение VSW усреднением нескольких отсчётов АЦП1 (PA4). 
+
+\begin{DoxyNote}{Note}
+Код АЦП пересчитывается в напряжение через делитель напряжения (R2/\+\+R5), затем корректируется калибровочными коэффициентами g\+\_\+voltage\+\_\+k/\+g\+\_\+voltage\+\_\+b. 
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em samples} & Количество отсчётов АЦП для усреднения. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyRetVals}{Return values}
+{\em Измеренное} & и откалиброванное напряжение, В. \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a81a7273c6daf529e0caea13b2ac6ae30}\index{main.c@{main.c}!Regulation\_Step@{Regulation\_Step}}
+\index{Regulation\_Step@{Regulation\_Step}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{Regulation\_Step()}{Regulation\_Step()}}
+{\footnotesize\ttfamily \label{main_8c_a81a7273c6daf529e0caea13b2ac6ae30} 
+void Regulation\+\_\+\+Step (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Исполнительный шаг алгоритма стабилизации (вызывается циклически). 
+
+\begin{DoxyNote}{Note}
+В режиме REG\+\_\+\+NONE регулирование отключено В режиме REG\+\_\+\+VOLTAGE считывает текущее напряжение через Read\+VSW\+\_\+\+Voltage\+\_\+\+Avg рассчитывает ошибку рассогласования относительно заданного target\+\_\+voltage и вычисляет управляющее воздействие с помощью ПИД-\/структуры напряжения. 
+\end{DoxyNote}
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a4529cf5cd93ec988a6ffd338a7f3e203}\index{main.c@{main.c}!SaveCoefficientsToFlash@{SaveCoefficientsToFlash}}
+\index{SaveCoefficientsToFlash@{SaveCoefficientsToFlash}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{SaveCoefficientsToFlash()}{SaveCoefficientsToFlash()}}
+{\footnotesize\ttfamily \label{main_8c_a4529cf5cd93ec988a6ffd338a7f3e203} 
+void Save\+Coefficients\+To\+Flash (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Сохраняет текущие калибровочные коэффициенты во Flash-\/память (EEPROM emulation). 
+
+\begin{DoxyNote}{Note}
+Записывает структуру ee\+\_\+storage целиком (с установленным маркером EE\+\_\+\+MAGIC\+\_\+\+VALID) через библиотеку Nima\+LTD I-\/\+CUBE-\/\+EE; сопровождается стиранием страницы Flash, зарезервированной под хранение (см. EE\+\_\+\+Write). 
+\end{DoxyNote}
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a1a78b3a0b1a6776ba40419ffb3703631}\index{main.c@{main.c}!SendCurrentNow@{SendCurrentNow}}
+\index{SendCurrentNow@{SendCurrentNow}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{SendCurrentNow()}{SendCurrentNow()}}
+{\footnotesize\ttfamily \label{main_8c_a1a78b3a0b1a6776ba40419ffb3703631} 
+void Send\+Current\+Now (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Немедленно формирует и отправляет по USB CDC строку с текущим током. 
+
+\begin{DoxyNote}{Note}
+Формат сообщения:\+ "{}\+I=$<$знач$>$\+A\textbackslash{}r\textbackslash{}n"{}. Источник данных — кэш last\+\_\+vcu. 
+\end{DoxyNote}
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a390a36de7cbdfc21712ba002df862860}\index{main.c@{main.c}!SendReportNow@{SendReportNow}}
+\index{SendReportNow@{SendReportNow}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{SendReportNow()}{SendReportNow()}}
+{\footnotesize\ttfamily \label{main_8c_a390a36de7cbdfc21712ba002df862860} 
+void Send\+Report\+Now (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Формирует и отправляет по USB CDC общий отчёт по напряжению и току. 
+
+\begin{DoxyNote}{Note}
+Формат сообщения:\+ "{}\+V=$<$знач$>$\+V I=$<$знач$>$\+A\textbackslash{}r\textbackslash{}n"{}. Вызывается по флагу flag\+\_\+report, выставляемому в HAL\+\_\+\+TIM\+\_\+\+Period\+Elapsed\+Callback при включённом периодическом отладочном выводе (debug\+\_\+output\+\_\+enabled). 
+\end{DoxyNote}
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a55f7cc12278e94e3e88f6d7202c769f0}\index{main.c@{main.c}!SendVoltageNow@{SendVoltageNow}}
+\index{SendVoltageNow@{SendVoltageNow}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{SendVoltageNow()}{SendVoltageNow()}}
+{\footnotesize\ttfamily \label{main_8c_a55f7cc12278e94e3e88f6d7202c769f0} 
+void Send\+Voltage\+Now (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Немедленно формирует и отправляет по USB CDC строку с текущим напряжением. 
+
+\begin{DoxyNote}{Note}
+Формат сообщения:\+ "{}\+V=$<$знач$>$\+V\textbackslash{}r\textbackslash{}n"{}. Источник данных — кэш last\+\_\+vsw. 
+\end{DoxyNote}
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a797ac38dc480cb084413f1283e95b6a1}\index{main.c@{main.c}!SetTargetCurrent@{SetTargetCurrent}}
+\index{SetTargetCurrent@{SetTargetCurrent}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{SetTargetCurrent()}{SetTargetCurrent()}}
+{\footnotesize\ttfamily \label{main_8c_a797ac38dc480cb084413f1283e95b6a1} 
+Set\+Result\+\_\+t Set\+Target\+Current (\begin{DoxyParamCaption}\item[{float}]{target\+\_\+current}{}\end{DoxyParamCaption})}
+
+
+
+Устанавливает целевой выходной ток через пересчёт в эквивалентное напряжение. 
+
+\begin{DoxyNote}{Note}
+Сопротивление нагрузки вычисляется по последним измеренным значениям (R = last\+\_\+vsw /\+ last\+\_\+vcu), расчитывает необходимое стартовое напряжение и ставит соответствующее значение потенциометра После этого управление передается контуру ПИД-\/регулирования тока. 
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em target\+\_\+current} & Целевой выходной ток, А (\texorpdfstring{$>$}{>} 0). \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyRetVals}{Return values}
+{\em SET\+\_\+\+OK} & при успехе; SET\+\_\+\+ERR\+\_\+\+NO\+\_\+\+LOAD, если последний измеренный ток равен 0 (сопротивление нагрузки неизвестно); иные коды ошибок в Compute\+Code\+For\+Voltage. \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_af22b01d408f17771b12b6ba35aa88b5f}\index{main.c@{main.c}!SetTargetVoltage@{SetTargetVoltage}}
+\index{SetTargetVoltage@{SetTargetVoltage}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{SetTargetVoltage()}{SetTargetVoltage()}}
+{\footnotesize\ttfamily \label{main_8c_af22b01d408f17771b12b6ba35aa88b5f} 
+Set\+Result\+\_\+t Set\+Target\+Voltage (\begin{DoxyParamCaption}\item[{float}]{target\+\_\+voltage}{}\end{DoxyParamCaption})}
+
+
+
+Устанавливает целевое выходное напряжение и включает автоматическое регулирование. 
+
+\begin{DoxyNote}{Note}
+Проверяет аварийное состояние платы (последнее измеренное VSW ниже 1.\+25В), рассчитывает и применяет код потенциометра через Compute\+Code\+For\+Voltage; точная доводка до целевого значения выполняется фоновым циклом Voltage\+Regulation\+\_\+\+Step. При ошибке состояние платы не изменяется. 
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em target\+\_\+voltage} & Целевое выходное напряжение, В. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyRetVals}{Return values}
+{\em SET\+\_\+\+OK} & при успешном применении; иначе код ошибки Set\+Result\+\_\+t \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a2f0ff303e1752c87395dd00697021c5c}\index{main.c@{main.c}!SoftSPI\_WriteByte@{SoftSPI\_WriteByte}}
+\index{SoftSPI\_WriteByte@{SoftSPI\_WriteByte}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{SoftSPI\_WriteByte()}{SoftSPI\_WriteByte()}}
+{\footnotesize\ttfamily \label{main_8c_a2f0ff303e1752c87395dd00697021c5c} 
+void Soft\+SPI\+\_\+\+Write\+Byte (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{data}{}\end{DoxyParamCaption})}
+
+
+
+Передаёт один байт по программному SPI (bit-\/bang), режим Mode 0 (CPOL=0, CPHA=0). 
+
+\begin{DoxyNote}{Note}
+Используется для связи с цифровым потенциометром MCP41010, так как на STM32\+F103\+C6\+T6 отсутствует аппаратный SPI2 (доступен только SPI1 на других пинах). 
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em data} & Байт данных для передачи, бит выставляется начиная со старшего (MSB first). \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a5329716fb431ddd2100cc4f420968d7b}\index{main.c@{main.c}!Startup\_ReferenceCalibration@{Startup\_ReferenceCalibration}}
+\index{Startup\_ReferenceCalibration@{Startup\_ReferenceCalibration}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{Startup\_ReferenceCalibration()}{Startup\_ReferenceCalibration()}}
+{\footnotesize\ttfamily \label{main_8c_a5329716fb431ddd2100cc4f420968d7b} 
+void Startup\+\_\+\+Reference\+Calibration (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Установка потенциометра в код 255 при старте МК. 
+
+\begin{DoxyNote}{Note}
+None 
+\end{DoxyNote}
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{main_8c_a70af21c671abfcc773614a9a4f63d920}\index{main.c@{main.c}!SystemClock\_Config@{SystemClock\_Config}}
+\index{SystemClock\_Config@{SystemClock\_Config}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{SystemClock\_Config()}{SystemClock\_Config()}}
+{\footnotesize\ttfamily \label{main_8c_a70af21c671abfcc773614a9a4f63d920} 
+void System\+Clock\+\_\+\+Config (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+System Clock Configuration. 
+
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
+Initializes the RCC Oscillators according to the specified parameters in the RCC\+\_\+\+Osc\+Init\+Type\+Def structure.
+
+Initializes the CPU, AHB and APB buses clocks\Hypertarget{main_8c_a88bbd6049eda9380b6373ed0fb5cb428}\index{main.c@{main.c}!UIntToStr@{UIntToStr}}
+\index{UIntToStr@{UIntToStr}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{UIntToStr()}{UIntToStr()}}
+{\footnotesize\ttfamily \label{main_8c_a88bbd6049eda9380b6373ed0fb5cb428} 
+uint8\+\_\+t UInt\+To\+Str (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{value}{, }\item[{char \texorpdfstring{$\ast$}{*}}]{buf}{}\end{DoxyParamCaption})}
+
+
+
+Преобразует беззнаковое целое число в десятичную строку без использования stdio.\+h. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em value} & Число для преобразования. \\
+\hline
+{\em buf} & Буфер для результата (без завершающего нулевого символа). \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyRetVals}{Return values}
+{\em Количество} & записанных в buf символов. \\
+\hline
+\end{DoxyRetVals}
