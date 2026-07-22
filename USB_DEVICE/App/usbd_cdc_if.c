@@ -702,7 +702,6 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 					FloatToStr(pid_i.Ki, ki_s, 3);
 					FloatToStr(pid_i.Kd, kd_s, 3);
 
-					// Сборка через memcpy во избежание проблем со stdio
 					uint8_t pos = 0;
 					const char prefix[] = "PID_I: Kp=";
 					memcpy(msg, prefix, strlen(prefix)); pos += strlen(prefix);
