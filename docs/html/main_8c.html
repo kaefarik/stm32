@@ -138,7 +138,7 @@ Macros</h2></td></tr>
 <tr class="memitem:ad3481336e8f2e676e47398d2b92b0f01" id="r_ad3481336e8f2e676e47398d2b92b0f01"><td class="memItemLeft"><a id="ad3481336e8f2e676e47398d2b92b0f01" name="ad3481336e8f2e676e47398d2b92b0f01"></a>
 #define&#160;</td><td class="memItemRight"><b>VOLTAGE_TOLERANCE</b>&#160;&#160;&#160;0.01f</td></tr>
 <tr class="memitem:a4deb5ee21f1744997e32171edcf037d3" id="r_a4deb5ee21f1744997e32171edcf037d3"><td class="memItemLeft"><a id="a4deb5ee21f1744997e32171edcf037d3" name="a4deb5ee21f1744997e32171edcf037d3"></a>
-#define&#160;</td><td class="memItemRight"><b>CURRENT_TOLERANCE</b>&#160;&#160;&#160;0.01f</td></tr>
+#define&#160;</td><td class="memItemRight"><b>CURRENT_TOLERANCE</b>&#160;&#160;&#160;0.005f</td></tr>
 <tr class="memitem:a0a1e4025de72eae7b2fd33a167424f4d" id="r_a0a1e4025de72eae7b2fd33a167424f4d"><td class="memItemLeft"><a id="a0a1e4025de72eae7b2fd33a167424f4d" name="a0a1e4025de72eae7b2fd33a167424f4d"></a>
 #define&#160;</td><td class="memItemRight"><b>ADJUST_INTERVAL_MS</b>&#160;&#160;&#160;50</td></tr>
 <tr class="memitem:ad0e40bab0574961a59f0233e602f834e" id="r_ad0e40bab0574961a59f0233e602f834e"><td class="memItemLeft"><a id="ad0e40bab0574961a59f0233e602f834e" name="ad0e40bab0574961a59f0233e602f834e"></a>
@@ -160,6 +160,9 @@ Enumerations</h2></td></tr>
 <tr class="memitem:a22455d1f37ad62a065b730cf519fde61" id="r_a22455d1f37ad62a065b730cf519fde61"><td class="memItemLeft"><a id="a22455d1f37ad62a065b730cf519fde61" name="a22455d1f37ad62a065b730cf519fde61"></a>enum &#160;</td><td class="memItemRight"><b>RegMode_t</b> { <b>REG_NONE</b> = 0
 , <b>REG_VOLTAGE</b>
 , <b>REG_CURRENT</b>
+ }</td></tr>
+<tr class="memitem:aeced82538b5663d712142ca7a950bad5" id="r_aeced82538b5663d712142ca7a950bad5"><td class="memItemLeft"><a id="aeced82538b5663d712142ca7a950bad5" name="aeced82538b5663d712142ca7a950bad5"></a>enum &#160;</td><td class="memItemRight"><b>CurrentRegMode_t</b> { <b>CURRENT_REG_PID</b> = 0
+, <b>CURRENT_REG_FORMULA</b>
  }</td></tr>
 <tr class="memitem:aa267c5763d0b58214b9314747b4fdc22" id="r_aa267c5763d0b58214b9314747b4fdc22"><td class="memItemLeft"><a id="aa267c5763d0b58214b9314747b4fdc22" name="aa267c5763d0b58214b9314747b4fdc22"></a>enum &#160;</td><td class="memItemRight"><b>CalMode_t</b> { <b>CAL_MODE_NONE</b> = 0
 , <b>CAL_MODE_VOLTAGE</b>
@@ -261,8 +264,7 @@ float&#160;</td><td class="memItemRight"><b>g_voltage_b</b> = -0.1782f</td></tr>
 float&#160;</td><td class="memItemRight"><b>g_current_k</b> = 0.882f</td></tr>
 <tr class="memitem:aeb0d8374b8ba98f06da14f5b521f6122" id="r_aeb0d8374b8ba98f06da14f5b521f6122"><td class="memItemLeft"><a id="aeb0d8374b8ba98f06da14f5b521f6122" name="aeb0d8374b8ba98f06da14f5b521f6122"></a>
 float&#160;</td><td class="memItemRight"><b>g_current_b</b> = 0.0116f</td></tr>
-<tr class="memitem:ac8fc8a345be0d01ba0dc68ef0ce3660b" id="r_ac8fc8a345be0d01ba0dc68ef0ce3660b"><td class="memItemLeft"><a id="ac8fc8a345be0d01ba0dc68ef0ce3660b" name="ac8fc8a345be0d01ba0dc68ef0ce3660b"></a>
-<a class="el" href="structee_storage__t.html">eeStorage_t</a>&#160;</td><td class="memItemRight"><b>ee_storage</b></td></tr>
+<tr class="memitem:ac8fc8a345be0d01ba0dc68ef0ce3660b" id="r_ac8fc8a345be0d01ba0dc68ef0ce3660b"><td class="memItemLeft"><a class="el" href="structee_storage__t.html">eeStorage_t</a>&#160;</td><td class="memItemRight"><a class="el" href="#ac8fc8a345be0d01ba0dc68ef0ce3660b">ee_storage</a></td></tr>
 <tr class="memitem:afee8bbf694b3e4caa8d2f6d9f1f1e573" id="r_afee8bbf694b3e4caa8d2f6d9f1f1e573"><td class="memItemLeft"><a id="afee8bbf694b3e4caa8d2f6d9f1f1e573" name="afee8bbf694b3e4caa8d2f6d9f1f1e573"></a>
 volatile CalMode_t&#160;</td><td class="memItemRight"><b>cal_mode</b> = CAL_MODE_NONE</td></tr>
 <tr class="memitem:a5a7e1b6febd0ad0a887db31a865b549d" id="r_a5a7e1b6febd0ad0a887db31a865b549d"><td class="memItemLeft"><a id="a5a7e1b6febd0ad0a887db31a865b549d" name="a5a7e1b6febd0ad0a887db31a865b549d"></a>
@@ -293,6 +295,8 @@ float&#160;</td><td class="memItemRight"><b>pid_i_Kp</b> = 4.5f</td></tr>
 float&#160;</td><td class="memItemRight"><b>pid_i_Ki</b> = 6.0f</td></tr>
 <tr class="memitem:a6d9d56820ff6165fa9ef9198156aeb6b" id="r_a6d9d56820ff6165fa9ef9198156aeb6b"><td class="memItemLeft"><a id="a6d9d56820ff6165fa9ef9198156aeb6b" name="a6d9d56820ff6165fa9ef9198156aeb6b"></a>
 float&#160;</td><td class="memItemRight"><b>pid_i_Kd</b> = 0.0f</td></tr>
+<tr class="memitem:a8e80ed12eea470885a725c047b3b72c4" id="r_a8e80ed12eea470885a725c047b3b72c4"><td class="memItemLeft"><a id="a8e80ed12eea470885a725c047b3b72c4" name="a8e80ed12eea470885a725c047b3b72c4"></a>
+volatile CurrentRegMode_t&#160;</td><td class="memItemRight"><b>current_reg_mode</b> = CURRENT_REG_FORMULA</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>: Main program body </p>
@@ -852,7 +856,7 @@ float&#160;</td><td class="memItemRight"><b>pid_i_Kd</b> = 0.0f</td></tr>
 </div><div class="memdoc">
 
 <p>Исполнительный шаг алгоритма стабилизации (вызывается циклически). </p>
-<dl class="section note"><dt>Note</dt><dd>В режиме REG_NONE регулирование отключено В режиме REG_VOLTAGE считывает текущее напряжение через ReadVSW_Voltage_Avg рассчитывает ошибку рассогласования относительно заданного target_voltage и вычисляет управляющее воздействие с помощью ПИД-структуры напряжения. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>В режиме REG_NONE регулирование отключено В режиме REG_VOLTAGE рассчитывает ошибку рассогласования относительно заданного target_voltage и вычисляет управляющее воздействие с помощью ПИД-структуры напряжения. В режиме REG_CURRENT рассчитывает ошибку рассогласования относительно заданного target_current и вычисляет управляющее воздействие с помощью ПИД-структуры тока. </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">None</td><td></td></tr>
@@ -1149,6 +1153,36 @@ float&#160;</td><td class="memItemRight"><b>pid_i_Kd</b> = 0.0f</td></tr>
   </dd>
 </dl>
 
+</div>
+</div>
+<a name="doc-var-members" id="doc-var-members"></a><h2 id="header-doc-var-members" class="groupheader">Variable Documentation</h2>
+<a id="ac8fc8a345be0d01ba0dc68ef0ce3660b" name="ac8fc8a345be0d01ba0dc68ef0ce3660b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8fc8a345be0d01ba0dc68ef0ce3660b">&#9670;&#160;</a></span>ee_storage</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structee_storage__t.html">eeStorage_t</a> ee_storage</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">                       = {</div>
+<div class="line">    .magic = EE_MAGIC_VALID,</div>
+<div class="line">    .voltage_k = 0.9943f,</div>
+<div class="line">    .voltage_b = -0.1782f,</div>
+<div class="line">    .current_k = 0.882f,</div>
+<div class="line">    .current_b = 0.0116f,</div>
+<div class="line"> </div>
+<div class="line">    .pid_Kp = 8.0f,</div>
+<div class="line">    .pid_Ki = 5.0f,</div>
+<div class="line">    .pid_Kd = 0.05f,</div>
+<div class="line"> </div>
+<div class="line">    .pid_i_Kp = 4.5f,</div>
+<div class="line">    .pid_i_Ki = 6.0f,</div>
+<div class="line">    .pid_i_Kd = 0.0f</div>
+<div class="line">}</div>
+</div><!-- fragment -->
 </div>
 </div>
 </div><!-- contents -->

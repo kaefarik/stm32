@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['savecoefficientstoflash_0',['SaveCoefficientsToFlash',['../main_8c.html#a4529cf5cd93ec988a6ffd338a7f3e203',1,'main.c']]],
+  ['savecoefficientstoflash_0',['SaveCoefficientsToFlash',['../main_8c.html#a4529cf5cd93ec988a6ffd338a7f3e203',1,'SaveCoefficientsToFlash(void):&#160;main.c'],['../usbd__cdc__if_8c.html#a4529cf5cd93ec988a6ffd338a7f3e203',1,'SaveCoefficientsToFlash(void):&#160;main.c']]],
   ['sendcurrentnow_1',['SendCurrentNow',['../main_8c.html#a1a78b3a0b1a6776ba40419ffb3703631',1,'SendCurrentNow(void):&#160;main.c'],['../usbd__cdc__if_8c.html#a1a78b3a0b1a6776ba40419ffb3703631',1,'SendCurrentNow(void):&#160;main.c']]],
   ['sendreportnow_2',['SendReportNow',['../main_8c.html#a390a36de7cbdfc21712ba002df862860',1,'main.c']]],
   ['sendvoltagenow_3',['SendVoltageNow',['../main_8c.html#a55f7cc12278e94e3e88f6d7202c769f0',1,'SendVoltageNow(void):&#160;main.c'],['../usbd__cdc__if_8c.html#a55f7cc12278e94e3e88f6d7202c769f0',1,'SendVoltageNow(void):&#160;main.c']]],

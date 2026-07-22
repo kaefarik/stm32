@@ -6,6 +6,11 @@
 
 
 {\ttfamily \+\#include "{}usbd\+\_\+cdc\+\_\+if.\+h"{}}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \doxymbox{\hyperlink{struct_p_i_d___controller__t}{PID\+\_\+\+Controller\+\_\+t}}
+\end{DoxyCompactItemize}
 \doxysubsubsection*{Enumerations}
 \begin{DoxyCompactItemize}
 \item 
@@ -54,6 +59,10 @@ void \doxymbox{\hyperlink{usbd__cdc__if_8c_ab688837be71fcac7f55eec95235175a8}{Pr
 \begin{DoxyCompactList}\small\item\em Считывает и отправляет по USB CDC содержимое сохранённых во Flash коэффициентов. \end{DoxyCompactList}\item 
 void \doxymbox{\hyperlink{usbd__cdc__if_8c_a18be6cf33846b540d888fafbade07939}{Print\+Saved\+Current\+Coefficients}} (void)
 \begin{DoxyCompactList}\small\item\em Считывает и отправляет по USB CDC содержимое сохранённых во Flash коэффициентов. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{usbd__cdc__if_8c_a4529cf5cd93ec988a6ffd338a7f3e203}{Save\+Coefficients\+To\+Flash}} (void)
+\begin{DoxyCompactList}\small\item\em Сохраняет текущие калибровочные коэффициенты во Flash-\/память (EEPROM emulation). \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{usbd__cdc__if_8c_a8c3d7b641ce987818f84adafbdc3bd3c}{Float\+To\+Str}} (float value, char \texorpdfstring{$\ast$}{*}buf, uint8\+\_\+t decimals)
+\begin{DoxyCompactList}\small\item\em Форматирует число с плавающей точкой в строку с фиксированным числом знаков после запятой, без использования printf/\+sprintf из stdio.\+h. \end{DoxyCompactList}\item 
 uint8\+\_\+t \doxymbox{\hyperlink{group___u_s_b_d___c_d_c___i_f___exported___functions_prototype_ga76df691e1246680449ae5052f1c2ed9a}{CDC\+\_\+\+Transmit\+\_\+\+FS\+\_\+\+Blocking}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}Buf, uint16\+\_\+t Len, uint32\+\_\+t timeout\+\_\+ms)
 \begin{DoxyCompactList}\small\item\em Отправляет данные по USB CDC с ожиданием готовности передатчика (retry-\/цикл). \end{DoxyCompactList}\item 
 uint8\+\_\+t \doxymbox{\hyperlink{group___u_s_b_d___c_d_c___i_f_ga5137d6201dbdef2bf351c5b4941c24f4}{CDC\+\_\+\+Transmit\+\_\+\+FS}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}Buf, uint16\+\_\+t Len)
@@ -69,6 +78,12 @@ volatile uint8\+\_\+t {\bfseries debug\+\_\+output\+\_\+enabled}
 \item 
 \Hypertarget{usbd__cdc__if_8c_a867dd4d048403155c5308085fbd5421f}\label{usbd__cdc__if_8c_a867dd4d048403155c5308085fbd5421f} 
 volatile uint32\+\_\+t {\bfseries debug\+\_\+report\+\_\+interval\+\_\+ms}
+\item 
+\Hypertarget{usbd__cdc__if_8c_a903264133a1ece565e19c58f15d78627}\label{usbd__cdc__if_8c_a903264133a1ece565e19c58f15d78627} 
+\doxymbox{\hyperlink{struct_p_i_d___controller__t}{PID\+\_\+\+Controller\+\_\+t}} {\bfseries pid\+\_\+v}
+\item 
+\Hypertarget{usbd__cdc__if_8c_abbbea09ed5574ee1975f2af8e47445d0}\label{usbd__cdc__if_8c_abbbea09ed5574ee1975f2af8e47445d0} 
+\doxymbox{\hyperlink{struct_p_i_d___controller__t}{PID\+\_\+\+Controller\+\_\+t}} {\bfseries pid\+\_\+i}
 \item 
 uint8\+\_\+t \doxymbox{\hyperlink{group___u_s_b_d___c_d_c___i_f___private___variables_ga1e37e6616e6affe5acf9c0befd063f6a}{User\+Rx\+Buffer\+FS}} \+[APP\+\_\+\+RX\+\_\+\+DATA\+\_\+\+SIZE]\+
 \item 
@@ -203,6 +218,33 @@ uint8\+\_\+t Cal\+Stop\+\_\+\+And\+Compute (\begin{DoxyParamCaption}\item[{char 
 {\em 1} & при успешном расчёте; 0, если данных недостаточно (см. Solve\+Linear\+Fit). \\
 \hline
 \end{DoxyRetVals}
+\Hypertarget{usbd__cdc__if_8c_a8c3d7b641ce987818f84adafbdc3bd3c}\index{usbd\_cdc\_if.c@{usbd\_cdc\_if.c}!FloatToStr@{FloatToStr}}
+\index{FloatToStr@{FloatToStr}!usbd\_cdc\_if.c@{usbd\_cdc\_if.c}}
+\doxysubsubsection{\texorpdfstring{FloatToStr()}{FloatToStr()}}
+{\footnotesize\ttfamily \label{usbd__cdc__if_8c_a8c3d7b641ce987818f84adafbdc3bd3c} 
+void Float\+To\+Str (\begin{DoxyParamCaption}\item[{float}]{value}{, }\item[{char \texorpdfstring{$\ast$}{*}}]{buf}{, }\item[{uint8\+\_\+t}]{decimals}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Форматирует число с плавающей точкой в строку с фиксированным числом знаков после запятой, без использования printf/\+sprintf из stdio.\+h. 
+
+\begin{DoxyNote}{Note}
+Поддерживает отрицательные значения и корректно обрабатывает перенос при округлении дробной части (например, 0.\+9999 при decimals=3 даёт "{}1.\+000"{}). 
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em value} & Значение для форматирования. \\
+\hline
+{\em buf} & Буфер для результирующей, завершённой нулём строки. \\
+\hline
+{\em decimals} & Количество знаков после запятой. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
 \Hypertarget{usbd__cdc__if_8c_a787f10bc3e825ca26d9a0bc6d4af034f}\index{usbd\_cdc\_if.c@{usbd\_cdc\_if.c}!MCP41010\_SetWiper@{MCP41010\_SetWiper}}
 \index{MCP41010\_SetWiper@{MCP41010\_SetWiper}!usbd\_cdc\_if.c@{usbd\_cdc\_if.c}}
 \doxysubsubsection{\texorpdfstring{MCP41010\_SetWiper()}{MCP41010\_SetWiper()}}
@@ -256,6 +298,24 @@ void Print\+Saved\+Voltage\+Coefficients (\begin{DoxyParamCaption}\item[{void}]{
 
 \begin{DoxyNote}{Note}
 Используется командой get\+\_\+cv. 
+\end{DoxyNote}
+
+\begin{DoxyRetVals}{Return values}
+{\em None} & \\
+\hline
+\end{DoxyRetVals}
+\Hypertarget{usbd__cdc__if_8c_a4529cf5cd93ec988a6ffd338a7f3e203}\index{usbd\_cdc\_if.c@{usbd\_cdc\_if.c}!SaveCoefficientsToFlash@{SaveCoefficientsToFlash}}
+\index{SaveCoefficientsToFlash@{SaveCoefficientsToFlash}!usbd\_cdc\_if.c@{usbd\_cdc\_if.c}}
+\doxysubsubsection{\texorpdfstring{SaveCoefficientsToFlash()}{SaveCoefficientsToFlash()}}
+{\footnotesize\ttfamily \label{usbd__cdc__if_8c_a4529cf5cd93ec988a6ffd338a7f3e203} 
+void Save\+Coefficients\+To\+Flash (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Сохраняет текущие калибровочные коэффициенты во Flash-\/память (EEPROM emulation). 
+
+\begin{DoxyNote}{Note}
+Записывает структуру ee\+\_\+storage целиком (с установленным маркером EE\+\_\+\+MAGIC\+\_\+\+VALID) через библиотеку Nima\+LTD I-\/\+CUBE-\/\+EE; сопровождается стиранием страницы Flash, зарезервированной под хранение (см. EE\+\_\+\+Write). 
 \end{DoxyNote}
 
 \begin{DoxyRetVals}{Return values}

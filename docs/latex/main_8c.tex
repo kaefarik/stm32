@@ -26,7 +26,7 @@ struct \doxymbox{\hyperlink{structee_storage__t}{ee\+Storage\+\_\+t}}
 \+\#define {\bfseries VOLTAGE\+\_\+\+TOLERANCE}~0.\+01f
 \item 
 \Hypertarget{main_8c_a4deb5ee21f1744997e32171edcf037d3}\label{main_8c_a4deb5ee21f1744997e32171edcf037d3} 
-\+\#define {\bfseries CURRENT\+\_\+\+TOLERANCE}~0.\+01f
+\+\#define {\bfseries CURRENT\+\_\+\+TOLERANCE}~0.\+005f
 \item 
 \Hypertarget{main_8c_a0a1e4025de72eae7b2fd33a167424f4d}\label{main_8c_a0a1e4025de72eae7b2fd33a167424f4d} 
 \+\#define {\bfseries ADJUST\+\_\+\+INTERVAL\+\_\+\+MS}~50
@@ -54,6 +54,11 @@ enum {\bfseries Set\+Result\+\_\+t} \{ \newline
 enum {\bfseries Reg\+Mode\+\_\+t} \{ {\bfseries REG\+\_\+\+NONE} = 0
 , {\bfseries REG\+\_\+\+VOLTAGE}
 , {\bfseries REG\+\_\+\+CURRENT}
+ \}
+\item 
+\Hypertarget{main_8c_aeced82538b5663d712142ca7a950bad5}\label{main_8c_aeced82538b5663d712142ca7a950bad5} 
+enum {\bfseries Current\+Reg\+Mode\+\_\+t} \{ {\bfseries CURRENT\+\_\+\+REG\+\_\+\+PID} = 0
+, {\bfseries CURRENT\+\_\+\+REG\+\_\+\+FORMULA}
  \}
 \item 
 \Hypertarget{main_8c_aa267c5763d0b58214b9314747b4fdc22}\label{main_8c_aa267c5763d0b58214b9314747b4fdc22} 
@@ -175,8 +180,7 @@ float {\bfseries g\+\_\+current\+\_\+k} = 0.\+882f
 \Hypertarget{main_8c_aeb0d8374b8ba98f06da14f5b521f6122}\label{main_8c_aeb0d8374b8ba98f06da14f5b521f6122} 
 float {\bfseries g\+\_\+current\+\_\+b} = 0.\+0116f
 \item 
-\Hypertarget{main_8c_ac8fc8a345be0d01ba0dc68ef0ce3660b}\label{main_8c_ac8fc8a345be0d01ba0dc68ef0ce3660b} 
-\doxymbox{\hyperlink{structee_storage__t}{ee\+Storage\+\_\+t}} {\bfseries ee\+\_\+storage}
+\doxymbox{\hyperlink{structee_storage__t}{ee\+Storage\+\_\+t}} \doxymbox{\hyperlink{main_8c_ac8fc8a345be0d01ba0dc68ef0ce3660b}{ee\+\_\+storage}}
 \item 
 \Hypertarget{main_8c_afee8bbf694b3e4caa8d2f6d9f1f1e573}\label{main_8c_afee8bbf694b3e4caa8d2f6d9f1f1e573} 
 volatile Cal\+Mode\+\_\+t {\bfseries cal\+\_\+mode} = CAL\+\_\+\+MODE\+\_\+\+NONE
@@ -222,6 +226,9 @@ float {\bfseries pid\+\_\+i\+\_\+\+Ki} = 6.\+0f
 \item 
 \Hypertarget{main_8c_a6d9d56820ff6165fa9ef9198156aeb6b}\label{main_8c_a6d9d56820ff6165fa9ef9198156aeb6b} 
 float {\bfseries pid\+\_\+i\+\_\+\+Kd} = 0.\+0f
+\item 
+\Hypertarget{main_8c_a8e80ed12eea470885a725c047b3b72c4}\label{main_8c_a8e80ed12eea470885a725c047b3b72c4} 
+volatile Current\+Reg\+Mode\+\_\+t {\bfseries current\+\_\+reg\+\_\+mode} = CURRENT\+\_\+\+REG\+\_\+\+FORMULA
 \end{DoxyCompactItemize}
 
 
@@ -615,7 +622,7 @@ void Regulation\+\_\+\+Step (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyP
 Исполнительный шаг алгоритма стабилизации (вызывается циклически). 
 
 \begin{DoxyNote}{Note}
-В режиме REG\+\_\+\+NONE регулирование отключено В режиме REG\+\_\+\+VOLTAGE считывает текущее напряжение через Read\+VSW\+\_\+\+Voltage\+\_\+\+Avg рассчитывает ошибку рассогласования относительно заданного target\+\_\+voltage и вычисляет управляющее воздействие с помощью ПИД-\/структуры напряжения. 
+В режиме REG\+\_\+\+NONE регулирование отключено В режиме REG\+\_\+\+VOLTAGE рассчитывает ошибку рассогласования относительно заданного target\+\_\+voltage и вычисляет управляющее воздействие с помощью ПИД-\/структуры напряжения. В режиме REG\+\_\+\+CURRENT рассчитывает ошибку рассогласования относительно заданного target\+\_\+current и вычисляет управляющее воздействие с помощью ПИД-\/структуры тока. 
 \end{DoxyNote}
 
 \begin{DoxyRetVals}{Return values}
@@ -820,3 +827,33 @@ uint8\+\_\+t UInt\+To\+Str (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{value
 {\em Количество} & записанных в buf символов. \\
 \hline
 \end{DoxyRetVals}
+
+
+\label{main_8c_doc-var-members}
+\Hypertarget{main_8c_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{main_8c_ac8fc8a345be0d01ba0dc68ef0ce3660b}\index{main.c@{main.c}!ee\_storage@{ee\_storage}}
+\index{ee\_storage@{ee\_storage}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{ee\_storage}{ee\_storage}}
+{\footnotesize\ttfamily \label{main_8c_ac8fc8a345be0d01ba0dc68ef0ce3660b} 
+\doxymbox{\hyperlink{structee_storage__t}{ee\+Storage\+\_\+t}} ee\+\_\+storage}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ =\ \{}
+\DoxyCodeLine{\ \ \ \ .magic\ =\ EE\_MAGIC\_VALID,}
+\DoxyCodeLine{\ \ \ \ .voltage\_k\ =\ 0.9943f,}
+\DoxyCodeLine{\ \ \ \ .voltage\_b\ =\ -\/0.1782f,}
+\DoxyCodeLine{\ \ \ \ .current\_k\ =\ 0.882f,}
+\DoxyCodeLine{\ \ \ \ .current\_b\ =\ 0.0116f,}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ .pid\_Kp\ =\ 8.0f,}
+\DoxyCodeLine{\ \ \ \ .pid\_Ki\ =\ 5.0f,}
+\DoxyCodeLine{\ \ \ \ .pid\_Kd\ =\ 0.05f,}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ .pid\_i\_Kp\ =\ 4.5f,}
+\DoxyCodeLine{\ \ \ \ .pid\_i\_Ki\ =\ 6.0f,}
+\DoxyCodeLine{\ \ \ \ .pid\_i\_Kd\ =\ 0.0f}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
