@@ -45,6 +45,18 @@ typedef enum {
     REG_CURRENT
 } RegMode_t;
 
+typedef struct {
+    float Kp;             // Пропорциональный коэффициент
+    float Ki;             // Интегральный коэффициент
+    float Kd;             // Дифференциальный коэффициент
+    float integrator;     // Накопленная интегральная сумма
+    float prev_error;     // Ошибка на предыдущем шаге
+    float dt;             // Шаг дискретизации в секундах (ADJUST_INTERVAL_MS / 1000.0)
+    float out_min;        // Минимальное ограничение выхода (0.0)
+    // Максимальное ограничение выхода (255.0)
+    float out_max;
+} PID_Controller_t;
+
 extern uint8_t UIntToStr(uint32_t value, char *buf);
 extern void MCP41010_SetWiper(uint8_t value);
 static uint8_t cmd_buffer[64];
@@ -65,7 +77,10 @@ extern void SendCurrentNow(void);
 extern void PrintSavedVoltageCoefficients(void);
 extern void PrintSavedCurrentCoefficients(void);
 
-
+extern PID_Controller_t pid_v;
+extern PID_Controller_t pid_i;
+extern void SaveCoefficientsToFlash(void);
+extern void FloatToStr(float value, char *buf, uint8_t decimals);
 /**
   * @brief  Отправляет данные по USB CDC с ожиданием готовности передатчика (retry-цикл).
   * @note   Оборачивает CDC_Transmit_FS, повторяя попытку до истечения timeout_ms,
@@ -130,7 +145,7 @@ static float MyAtof(const char *str)
     float int_part = 0.0f;
     while (*str >= '0' && *str <= '9')
     {
-        int_part = int_part * 10.0f + (*str - '0');
+        int_part = int_part * 10 + (*str - '0');
         str++;
     }
 
@@ -141,8 +156,9 @@ static float MyAtof(const char *str)
         float scale = 0.1f;
         while (*str >= '0' && *str <= '9')
         {
+        	scale *= 0.1f;
             frac_part += (*str - '0') * scale;
-            scale *= 0.1f;
+
             str++;
         }
     }
@@ -610,6 +626,97 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 
 					SetResult_t result = SetTargetCurrent(target_i);
 					SendSetResultResponse(result, "SETTING_I");
+				}
+                else if (strncmp((char*)cmd_buffer, "set_pid_v_kp", 12) == 0)
+				{
+					char *arg_ptr = SkipSpaces((char*)&cmd_buffer[12]);
+					pid_v.Kp = MyAtof(arg_ptr);
+					SaveCoefficientsToFlash();
+					char resp[] = "OK SET_PID_V_KP\r\n";
+					CDC_Transmit_FS((uint8_t*)resp, strlen(resp));
+				}
+				else if (strncmp((char*)cmd_buffer, "set_pid_v_ki", 12) == 0)
+				{
+					char *arg_ptr = SkipSpaces((char*)&cmd_buffer[12]);
+					pid_v.Ki = MyAtof(arg_ptr);
+					SaveCoefficientsToFlash();
+					char resp[] = "OK SET_PID_V_KI\r\n";
+					CDC_Transmit_FS((uint8_t*)resp, strlen(resp));
+				}
+				else if (strncmp((char*)cmd_buffer, "set_pid_v_kd", 12) == 0)
+				{
+					char *arg_ptr = SkipSpaces((char*)&cmd_buffer[12]);
+					pid_v.Kd = MyAtof(arg_ptr);
+					SaveCoefficientsToFlash();
+					char resp[] = "OK SET_PID_V_KD\r\n";
+					CDC_Transmit_FS((uint8_t*)resp, strlen(resp));
+				}
+				else if (strncmp((char*)cmd_buffer, "set_pid_i_kp", 12) == 0)
+				{
+					char *arg_ptr = SkipSpaces((char*)&cmd_buffer[12]);
+					pid_i.Kp = MyAtof(arg_ptr);
+					SaveCoefficientsToFlash();
+					char resp[] = "OK SET_PID_I_KP\r\n";
+					CDC_Transmit_FS((uint8_t*)resp, strlen(resp));
+				}
+				else if (strncmp((char*)cmd_buffer, "set_pid_i_ki", 12) == 0)
+				{
+					char *arg_ptr = SkipSpaces((char*)&cmd_buffer[12]);
+					pid_i.Ki = MyAtof(arg_ptr);
+					SaveCoefficientsToFlash();
+					char resp[] = "OK SET_PID_I_KI\r\n";
+					CDC_Transmit_FS((uint8_t*)resp, strlen(resp));
+				}
+				else if (strncmp((char*)cmd_buffer, "set_pid_i_kd", 12) == 0)
+				{
+					char *arg_ptr = SkipSpaces((char*)&cmd_buffer[12]);
+					pid_i.Kd = MyAtof(arg_ptr);
+					SaveCoefficientsToFlash();
+					char resp[] = "OK SET_PID_I_KD\r\n";
+					CDC_Transmit_FS((uint8_t*)resp, strlen(resp));
+				}
+				else if (strncmp((char*)cmd_buffer, "get_kv", 6) == 0)
+				{
+					char msg[64];
+					char kp_s[16], ki_s[16], kd_s[16];
+					FloatToStr(pid_v.Kp, kp_s, 3);
+					FloatToStr(pid_v.Ki, ki_s, 3);
+					FloatToStr(pid_v.Kd, kd_s, 3);
+
+					uint8_t pos = 0;
+					const char prefix[] = "PID_V: Kp=";
+					memcpy(msg, prefix, strlen(prefix)); pos += strlen(prefix);
+					memcpy(&msg[pos], kp_s, strlen(kp_s)); pos += strlen(kp_s);
+					msg[pos++] = ' '; msg[pos++] = 'K'; msg[pos++] = 'i'; msg[pos++] = '=';
+					memcpy(&msg[pos], ki_s, strlen(ki_s)); pos += strlen(ki_s);
+					msg[pos++] = ' '; msg[pos++] = 'K'; msg[pos++] = 'd'; msg[pos++] = '=';
+					memcpy(&msg[pos], kd_s, strlen(kd_s)); pos += strlen(kd_s);
+					msg[pos++] = '\r'; msg[pos++] = '\n';
+
+					CDC_Transmit_FS((uint8_t*)msg, pos);
+				}
+				else if (strncmp((char*)cmd_buffer, "get_ki", 6) == 0)
+				{
+					char msg[64];
+					char kp_s[16], ki_s[16], kd_s[16];
+					FloatToStr(pid_i.Kp, kp_s, 3);
+					FloatToStr(pid_i.Ki, ki_s, 3);
+					FloatToStr(pid_i.Kd, kd_s, 3);
+
+					// Сборка через memcpy во избежание проблем со stdio
+					uint8_t pos = 0;
+					const char prefix[] = "PID_I: Kp=";
+					memcpy(msg, prefix, strlen(prefix)); pos += strlen(prefix);
+					memcpy(&msg[pos], kp_s, strlen(kp_s)); pos += strlen(kp_s);
+					const char ki_p[] = " Ki=";
+					memcpy(&msg[pos], ki_p, strlen(ki_p)); pos += strlen(ki_p);
+					memcpy(&msg[pos], ki_s, strlen(ki_s)); pos += strlen(ki_s);
+					const char kd_p[] = " Kd=";
+					memcpy(&msg[pos], kd_p, strlen(kd_p)); pos += strlen(kd_p);
+					memcpy(&msg[pos], kd_s, strlen(kd_s)); pos += strlen(kd_s);
+					msg[pos++] = '\r'; msg[pos++] = '\n';
+
+					CDC_Transmit_FS((uint8_t*)msg, pos);
 				}
                 else
                 {

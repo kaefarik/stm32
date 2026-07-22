@@ -56,6 +56,14 @@ typedef struct {
     float    voltage_b;
     float    current_k;
     float    current_b;
+
+    float pid_Kp;
+    float pid_Ki;
+    float pid_Kd;
+
+    float pid_i_Kp;
+    float pid_i_Ki;
+    float pid_i_Kd;
 } eeStorage_t;
 
 typedef enum {
@@ -64,14 +72,18 @@ typedef enum {
     REG_CURRENT
 } RegMode_t;
 
-
+// Подрежим регулирования ТОКА (используется только когда reg_mode == REG_CURRENT)
+typedef enum {
+    CURRENT_REG_PID = 0,   // формула даёт стартовое приближение, дальше доводит ПИД (P+I) по факту тока
+    CURRENT_REG_FORMULA    // только формула: каждый цикл V = I_target * (V_measured / I_measured), без ПИД
+} CurrentRegMode_t;
 
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define VOLTAGE_TOLERANCE   0.01f   // допуск, В — внутри него ничего не трогаем (deadband)
-#define CURRENT_TOLERANCE   0.01f
+#define CURRENT_TOLERANCE   0.005f
 //#define POT_STEP            1       // на сколько единиц кода двигаем за один шаг
 #define ADJUST_INTERVAL_MS  50     	// как часто подстраиваем (мс)
 #define MAX_CAL_POINTS      20		//количество точек для калибровки
@@ -111,7 +123,21 @@ float g_voltage_b = -0.1782f;
 float g_current_k = 0.882f;
 float g_current_b = 0.0116f;
 
-eeStorage_t ee_storage;
+eeStorage_t ee_storage = {
+    .magic = EE_MAGIC_VALID,
+    .voltage_k = 0.9943f,
+    .voltage_b = -0.1782f,
+    .current_k = 0.882f,
+    .current_b = 0.0116f,
+
+    .pid_Kp = 8.0f,
+    .pid_Ki = 5.0f,
+    .pid_Kd = 0.05f,
+
+    .pid_i_Kp = 4.5f,
+    .pid_i_Ki = 6.0f,
+    .pid_i_Kd = 0.0f
+};
 
 typedef enum {
     CAL_MODE_NONE = 0,
@@ -141,6 +167,8 @@ PID_Controller_t pid_i;
 float pid_i_Kp = 4.5f;
 float pid_i_Ki = 6.0f;
 float pid_i_Kd = 0.0f;
+
+volatile CurrentRegMode_t current_reg_mode = CURRENT_REG_FORMULA; // по умолчанию — режим с ПИД
 
 /* USER CODE END PV */
 
@@ -233,18 +261,18 @@ int main(void)
 
   Startup_ReferenceCalibration();
 
-  pid_v.Kp = pid_Kp;
-  pid_v.Ki = pid_Ki;
-  pid_v.Kd = pid_Kd;
+  pid_v.Kp = ee_storage.pid_Kp;
+  pid_v.Ki = ee_storage.pid_Ki;
+  pid_v.Kd = ee_storage.pid_Kd;
   pid_v.dt = (float)ADJUST_INTERVAL_MS / 1000.0f; // Переводим мс в секунды (0.05s)
   pid_v.integrator = 0.0f;
   pid_v.prev_error = 0.0f;
   pid_v.out_min = 0.0f;
   pid_v.out_max = 255.0f;
 
-  pid_i.Kp = pid_i_Kp;
-  pid_i.Ki = pid_i_Ki;
-  pid_i.Kd = pid_i_Kd;
+  pid_i.Kp = ee_storage.pid_i_Kp;
+  pid_i.Ki = ee_storage.pid_i_Ki;
+  pid_i.Kd = ee_storage.pid_i_Kd;
   pid_i.dt = (float)ADJUST_INTERVAL_MS / 1000.0f;
   pid_i.integrator = 0.0f;
   pid_i.prev_error = 0.0f;
@@ -780,25 +808,9 @@ void Regulation_Step(void)
 	if (reg_mode == REG_VOLTAGE)
 	{
 		float error = target_voltage_g - last_vsw;
-		float tolerance = VOLTAGE_TOLERANCE;
-
-		float active_error = 0.0f;
-		if (error > tolerance)
-		{
-			active_error = error - tolerance;
-		}
-		else if (error < -tolerance)
-		{
-			active_error = error + tolerance;
-		}
-		else
-		{
-			pid_v.prev_error = 0.0f;
-			return;
-		}
 
 		// Для напряжения ПИД вычисляет смещение кода потенциометра напрямую
-		float pid_output = PID_Compute(&pid_v, active_error, (float)current_pot_code);
+		float pid_output = PID_Compute(&pid_v, error, (float)current_pot_code);
 		float next_code = (float)current_pot_code - pid_output;
 
 		if (next_code < pid_v.out_min) next_code = pid_v.out_min;
@@ -809,60 +821,68 @@ void Regulation_Step(void)
 	}
 	else if (reg_mode == REG_CURRENT) // РЕГУЛИРОВАНИЕ ТОКА (как в working.c)
 	{
-		float error = target_current_g - last_vcu;
-		float tolerance = CURRENT_TOLERANCE;
-
-		float active_error = 0.0f;
-		if (error > tolerance)
+		if (last_vcu < 0.002f)
 		{
-			active_error = error - tolerance;
-		}
-		else if (error < -tolerance)
-		{
-			active_error = error + tolerance;
-		}
-		else
-		{
-			pid_i.prev_error = 0.0f;
+			pid_i.integrator = 0.0f;
 			return;
 		}
-
+		float error = target_current_g - last_vcu;
 
 		// Пропорциональная часть (Kp * error)
-		float p_term = pid_i.Kp * active_error;
-
+//		float p_term = pid_i.Kp * active_error;
+		float p_term = pid_i.Kp * error;
 		// Временный расчет следующего значения интеграла (шаг интегрирования dt = 0.05s)
-		float next_integrator = pid_i.integrator + active_error * pid_i.dt;
+//		float next_integrator = pid_i.integrator + active_error * pid_i.dt;
+//		float next_integrator = pid_i.integrator + error * pid_i.dt;
+		float next_integrator = pid_i.integrator + error * pid_i.dt;
 		float i_term = pid_i.Ki * next_integrator;
 
 		// Дифференциальная часть (при необходимости, если Kd != 0)
-		float d_term = pid_i.Kd * (active_error - pid_i.prev_error) / pid_i.dt;
-		pid_i.prev_error = active_error;
-
+//		float d_term = pid_i.Kd * (active_error - pid_i.prev_error) / pid_i.dt;
+//		float d_term = pid_i.Kd * (error - pid_i.prev_error) / pid_i.dt;
+//		pid_i.prev_error = active_error;
+//		pid_i.prev_error = error;
 		// Расчет коррекции напряжения
-		float voltage_correction = p_term + i_term + d_term;
+//		float voltage_correction = p_term + i_term + d_term;
+		float voltage_correction = p_term + i_term;
 
 		// Результирующее требуемое напряжение
 		float v_result = base_voltage_feedforward + voltage_correction;
 
+
+
 		// Жесткие рамки напряжения как в рабочем working.c (12.25V ... 24.0V)
 		// Защита Anti-windup: сохраняем интеграл только если напряжение не уперлось в рамки
-		if (v_result >= 12.5f && v_result <= 23.7f)
+		if (v_result >= 12.25f && v_result <= 24.0f)
 		{
 			pid_i.integrator = next_integrator;
 		}
 		else
 		{
-		if (v_result < 12.5f) v_result = 12.5f;
-		if (v_result > 23.7f) v_result = 23.7f;
+		if (v_result < 12.25f) v_result = 12.25f;
+		if (v_result > 24.0f) v_result = 24.0f;
+		}
+		float load = 1.25f * 180000.0f / (v_result - 1.25f) - 10000.0f;
+		int16_t pot;
+
+		if (load < 0.0f){ pot = 0;}
+
+		else if (load > 10000.0f) {pot = 255;}
+		else
+		{
+			pot = (int16_t)((load) * 256.0f / 10000.0f) - 2;
+			if (pot < 0.0f) pot = 0.0f;
+			if (pot > 255.0f) pot = 255.0f;
 		}
 
-		uint8_t next_code = current_pot_code;
-		if (ComputeCodeForVoltage(v_result, &next_code) == SET_OK)
-		{
-			current_pot_code = next_code;
-			MCP41010_SetWiper(current_pot_code);
-		}
+		current_pot_code = (uint8_t)pot;
+		MCP41010_SetWiper(current_pot_code);
+//		uint8_t next_code = current_pot_code;
+//		if (ComputeCodeForVoltage(v_result, &next_code) == SET_OK)
+//		{
+//			current_pot_code = next_code;
+//			MCP41010_SetWiper(current_pot_code);
+//		}
 	}
 
 }
@@ -919,11 +939,13 @@ SetResult_t ComputeCodeForVoltage(float target_voltage, uint8_t *out_code)
 		return SET_ERR_TOO_LOW; // Вольтаж слишком низкий (сопротивление превысило предел)
 	}
 
-    uint8_t code_f = (uint8_t)((Rb_target) * 255.0f / 10000.0f);
+    int16_t code_f = (int16_t)((Rb_target) * 256.0f / 10000.0f - 2);
  // code_f = (code_f - 10);
 //
-//    if (code_f < 0.0f)   code_f = 0.0f;
-//    if (code_f > 255.0f) code_f = 255.0f;
+    if (code_f < 0.0f)   code_f = 0.0f;
+    if (code_f > 255.0f) code_f = 255.0f;
+
+    code_f = (uint8_t)code_f;
 
     *out_code = code_f;
     return SET_OK;
@@ -993,8 +1015,6 @@ SetResult_t SetTargetCurrent(float target_current)
         return SET_ERR_NO_LOAD; // I_out1 = 0 -> ничего не делаем, как и требовалось
     }
 
-
-
     float R_load = V_out1 / I_out1;
 
     float V_guess = target_current * R_load;
@@ -1024,7 +1044,6 @@ SetResult_t SetTargetCurrent(float target_current)
 
     reg_mode = REG_CURRENT;   // дальше Regulation_Step (контур ТОКА) следит за last_vcu
 							  // и сам подстраивает код при любом изменении нагрузки
-
     return SET_OK;
 }
 
@@ -1301,6 +1320,14 @@ void SaveCoefficientsToFlash(void)
     ee_storage.current_k  = g_current_k;
     ee_storage.current_b  = g_current_b;
 
+    ee_storage.pid_Kp     = pid_v.Kp;
+	ee_storage.pid_Ki     = pid_v.Ki;
+	ee_storage.pid_Kd     = pid_v.Kd;
+
+	ee_storage.pid_i_Kp   = pid_i.Kp;
+	ee_storage.pid_i_Ki   = pid_i.Ki;
+	ee_storage.pid_i_Kd   = pid_i.Kd;
+
     EE_Write();   // стирает страницу и записывает всю структуру целиком
 }
 
@@ -1320,6 +1347,14 @@ void LoadCoefficientsFromFlash(void)
         g_voltage_b = ee_storage.voltage_b;
         g_current_k = ee_storage.current_k;
         g_current_b = ee_storage.current_b;
+
+        pid_v.Kp = ee_storage.pid_Kp;
+		pid_v.Ki = ee_storage.pid_Ki;
+		pid_v.Kd = ee_storage.pid_Kd;
+
+		pid_i.Kp = ee_storage.pid_i_Kp;
+		pid_i.Ki = ee_storage.pid_i_Ki;
+		pid_i.Kd = ee_storage.pid_i_Kd;
     }
     // Если magic не совпал (чистый/новый чип, либо страница ещё не записана) -
     // просто оставляем значения по умолчанию, заданные при объявлении g_voltage_k и т.д.
