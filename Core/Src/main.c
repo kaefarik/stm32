@@ -72,18 +72,12 @@ typedef enum {
     REG_CURRENT
 } RegMode_t;
 
-// Подрежим регулирования ТОКА (используется только когда reg_mode == REG_CURRENT)
-typedef enum {
-    CURRENT_REG_PID = 0,   // формула даёт стартовое приближение, дальше доводит ПИД (P+I) по факту тока
-    CURRENT_REG_FORMULA    // только формула: каждый цикл V = I_target * (V_measured / I_measured), без ПИД
-} CurrentRegMode_t;
 
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define VOLTAGE_TOLERANCE   0.01f   // допуск, В — внутри него ничего не трогаем (deadband)
-#define CURRENT_TOLERANCE   0.005f
+
 //#define POT_STEP            1       // на сколько единиц кода двигаем за один шаг
 #define ADJUST_INTERVAL_MS  50     	// как часто подстраиваем (мс)
 #define MAX_CAL_POINTS      20		//количество точек для калибровки
@@ -168,7 +162,6 @@ float pid_i_Kp = 4.5f;
 float pid_i_Ki = 6.0f;
 float pid_i_Kd = 0.0f;
 
-volatile CurrentRegMode_t current_reg_mode = CURRENT_REG_FORMULA; // по умолчанию — режим с ПИД
 
 /* USER CODE END PV */
 
