@@ -156,9 +156,8 @@ static float MyAtof(const char *str)
         float scale = 0.1f;
         while (*str >= '0' && *str <= '9')
         {
-        	scale *= 0.1f;
             frac_part += (*str - '0') * scale;
-
+            scale *= 0.1f;
             str++;
         }
     }
